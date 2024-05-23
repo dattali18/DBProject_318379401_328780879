@@ -220,11 +220,11 @@ erDiagram
 
 This diagram represents the relationships between the entities in the Flights Management part of the airport database system. Each entity is connected based on its relationship with other entities. If you need further adjustments or explanations, feel free to ask!
 
-![dds](/DSD/DSD.png)
+![dds](/Stage.1/DSD/DSD.png)
 
 #### ER Diagram:
 
-![erd](/ERD/ERD.png)
+![erd](/Stage.1/ERD/ERD.png)
 
 ## SQL Code
 
@@ -330,25 +330,25 @@ DROP TABLE IF EXISTS Airlines;
 ## Screen Shots of the Data
 
 - Airlines
-![Airlines](/TABLES/airline.png)
+![Airlines](/Stage.1TABLES/airline.png)
 
 - Airports
-![Airports](/TABLES/airport.png)
+![Airports](/Stage.1/TABLES/airport.png)
 
 - Aircraft
-![Aircraft](/TABLES/aircraft.png)
+![Aircraft](/Stage.1/TABLES/aircraft.png)
 
 - Passengers
-![Passengers](/TABLES/passenger.png)
+![Passengers](/Stage.1/TABLES/passenger.png)
 
 - Flights
-![Flights](/TABLES/flight.png)
+![Flights](/Stage.1/TABLES/flight.png)
 
 - Booking
-![Booking](/TABLES/booking.png)
+![Booking](/Stage.1/TABLES/booking.png)
 
 - Crew Members
-![Crew Members](/TABLES/crew.png)
+![Crew Members](/Stage.1/TABLES/crew.png)
 
 
 ## Starting Queries
