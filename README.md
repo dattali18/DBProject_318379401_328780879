@@ -1,2 +1,5 @@
-# DBProject_318379401_328780879
-This is the repo for the DB Project Course.
+# DB-Project
+
+## Stage 1:
+
+[Stage 1](Stage.1/README.md)
