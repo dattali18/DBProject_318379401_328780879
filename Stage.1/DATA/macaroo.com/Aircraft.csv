@@ -1,0 +1,201 @@
+AIRCRAFT_ID,AIRCRAFT_TYPE,CAPACITY
+1,Bombardier CRJ200,150
+2,Airbus A350,260
+3,Pilatus PC-24,460
+4,Embraer E175,170
+5,Pilatus PC-24,150
+6,Sukhoi Superjet 100,280
+7,Bombardier CRJ200,150
+8,Bombardier CS300,320
+9,Tupolev Tu-214,215
+10,Bombardier CRJ900,320
+11,Dassault Falcon 7X,200
+12,Beechcraft King Air 250,230
+13,Comac C919,170
+14,Boeing 737,300
+15,Cessna 172,320
+16,Airbus A310,200
+17,Pilatus PC-24,140
+18,McDonnell Douglas MD-11,420
+19,Bombardier CS300,190
+20,Airbus A220,280
+21,Ilyushin Il-96,230
+22,Beechcraft King Air 350,300
+23,Boeing 720,260
+24,Tupolev Tu-214,242
+25,Beechcraft King Air 250,100
+26,Airbus A310,320
+27,Lockheed L-1011,500
+28,Dassault Falcon 7X,200
+29,Embraer E195,420
+30,Bombardier CS100,215
+31,Ilyushin Il-96,230
+32,Bombardier CRJ900,200
+33,Tupolev Tu-204,280
+34,Airbus A350,190
+35,Sukhoi Superjet 100,100
+36,Gulfstream G280,460
+37,Comac ARJ21,500
+38,Airbus A320,260
+39,Bombardier CRJ900,350
+40,Airbus A350,200
+41,Antonov An-158,350
+42,Boeing 787 Dreamliner,140
+43,Antonov An-148,400
+44,Airbus A330,200
+45,Boeing 727,350
+46,Boeing 757,320
+47,Bombardier Q400,420
+48,Gulfstream G280,500
+49,Bombardier CRJ200,350
+50,Embraer E175,190
+51,Boeing 787 Dreamliner,400
+52,McDonnell Douglas DC-10,280
+53,Lockheed L-1011,242
+54,Bombardier CRJ900,350
+55,Beechcraft King Air 250,200
+56,Pilatus PC-12,242
+57,Airbus A321,200
+58,Airbus A350,140
+59,Airbus A320,242
+60,Embraer E175,350
+61,Bombardier CS100,170
+62,Bombardier CRJ200,500
+63,Boeing 720,420
+64,Embraer E195,230
+65,McDonnell Douglas DC-10,170
+66,Pilatus PC-12,500
+67,Gulfstream G550,300
+68,Gulfstream G550,260
+69,Gulfstream G550,260
+70,Lockheed L-1011,260
+71,Airbus A321,300
+72,Gulfstream G650,400
+73,Bombardier Q400,200
+74,Pilatus PC-24,200
+75,Cessna 172,500
+76,Dassault Falcon 7X,420
+77,Boeing 727,170
+78,Bombardier CRJ200,170
+79,Airbus A321,190
+80,Embraer E190,400
+81,Gulfstream G650,460
+82,Embraer E175,100
+83,Sukhoi Superjet 100,320
+84,Airbus A340,230
+85,Airbus A340,230
+86,Airbus A320,320
+87,Boeing 777,230
+88,Boeing 757,500
+89,Cessna Citation X,100
+90,Embraer E175,500
+91,Beechcraft King Air 350,170
+92,Tupolev Tu-204,215
+93,Gulfstream G650,260
+94,Bombardier CRJ900,460
+95,Antonov An-148,150
+96,Airbus A310,260
+97,Boeing 727,170
+98,Cessna 172,280
+99,Boeing 737,320
+100,Embraer E190,215
+101,Bombardier CS300,280
+102,Airbus A310,200
+103,McDonnell Douglas DC-10,170
+104,Boeing 737,170
+105,Boeing 737,400
+106,Antonov An-158,170
+107,Airbus A321,100
+108,Cessna 172,200
+109,Cessna Citation X,300
+110,Boeing 720,200
+111,Antonov An-158,500
+112,Airbus A321,242
+113,Airbus A330,300
+114,Embraer E195,215
+115,Beechcraft King Air 350,500
+116,Ilyushin Il-96,420
+117,McDonnell Douglas DC-10,230
+118,Embraer E175,460
+119,Beechcraft King Air 350,230
+120,McDonnell Douglas DC-10,140
+121,Cessna 182,420
+122,Bombardier CS100,500
+123,Embraer E195,260
+124,Airbus A340,460
+125,Bombardier CS300,242
+126,Tupolev Tu-204,170
+127,Boeing 767,140
+128,Gulfstream G650,420
+129,Airbus A330,300
+130,Boeing 767,170
+131,Ilyushin Il-96,420
+132,Airbus A350,170
+133,Comac ARJ21,260
+134,Bombardier CS100,200
+135,Gulfstream G280,140
+136,McDonnell Douglas DC-10,150
+137,Boeing 720,420
+138,Embraer E175,280
+139,Bombardier CRJ700,170
+140,Mitsubishi Regional Jet,190
+141,Tupolev Tu-204,190
+142,Airbus A380,150
+143,Boeing 767,500
+144,Bombardier CRJ900,260
+145,Pilatus PC-24,230
+146,Cessna 172,300
+147,Bombardier CRJ900,215
+148,Embraer E175,140
+149,Boeing 767,260
+150,Airbus A320,280
+151,Bombardier CRJ700,280
+152,Airbus A330,140
+153,Dassault Falcon 7X,230
+154,Bombardier CS100,420
+155,Antonov An-148,170
+156,Airbus A310,260
+157,Embraer E195,320
+158,Gulfstream G650,170
+159,Mitsubishi Regional Jet,350
+160,Boeing 747,170
+161,Antonov An-148,230
+162,Airbus A350,500
+163,Antonov An-148,100
+164,Boeing 757,460
+165,Embraer E195,242
+166,McDonnell Douglas DC-10,190
+167,Airbus A340,320
+168,McDonnell Douglas DC-10,420
+169,Airbus A220,320
+170,Ilyushin Il-96,460
+171,Dassault Falcon 7X,420
+172,Beechcraft King Air 250,420
+173,Bombardier CS100,350
+174,Airbus A321,280
+175,Airbus A340,242
+176,Gulfstream G650,260
+177,Cessna Citation X,420
+178,Antonov An-148,460
+179,Boeing 777,400
+180,Bombardier Q400,350
+181,Boeing 720,500
+182,Pilatus PC-24,215
+183,Boeing 737,280
+184,Cessna 172,320
+185,Sukhoi Superjet 100,400
+186,Bombardier CRJ700,140
+187,Bombardier CRJ700,500
+188,Tupolev Tu-214,190
+189,Embraer E195,320
+190,Ilyushin Il-96,260
+191,Mitsubishi Regional Jet,140
+192,Comac C919,460
+193,Bombardier CS300,420
+194,Boeing 727,260
+195,Tupolev Tu-204,350
+196,Airbus A330,230
+197,Beechcraft King Air 250,100
+198,Pilatus PC-12,140
+199,Ilyushin Il-96,400
+200,Boeing 757,215

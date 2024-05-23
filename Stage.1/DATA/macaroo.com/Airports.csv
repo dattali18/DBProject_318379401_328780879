@@ -1,0 +1,201 @@
+AIRPORT_ID,AIRPORT_NAME,LOCATION
+1,Man Airport,MJC
+2,Saposoa Airport,SQU
+3,King Cove Airport,KVC
+4,Lal Bahadur Shastri Airport,VNS
+5,Garanhuns Airport,QGP
+6,Grand Junction Regional Airport,GJT
+7,Mampikony Airport,WMP
+8,Higuerote Airport,HGE
+9,Makokou Airport,MKU
+10,Adak Airport,ADK
+11,Tromsø Airport,TOS
+12,Ziro Airport,ZER
+13,Rapid City Regional Airport,RAP
+14,Fulton County Airport,RCR
+15,Henbury Airport,HRY
+16,Tauramena Airport,TAU
+17,Ignace Municipal Airport,ZUC
+18,Wanxian Airport,WXN
+19,"Wellsville Municipal Arpt,Tarantine Field",ELZ
+20,Lyon-Bron Airport,LYN
+21,Le Havre Octeville Airport,LEH
+22,Boké Baralande Airport,BKJ
+23,Kupiano Airport,KUP
+24,Agra Airport,AGR
+25,São José Airport,0
+26,Nairobi Wilson Airport,WIL
+27,Nkaus Airport,NKU
+28,Liboi Airport,LBK
+29,Southeast Texas Regional Airport,BPT
+30,Long Banga Airport,LBP
+31,Aurukun Airport,AUU
+32,Santa Bárbara Airport,ISD
+33,Salem Airport,SXV
+34,Orinduik Airport,ORJ
+35,Seal Bay Seaplane Base,SYB
+36,Laoag International Airport,LAO
+37,Nyala Airport,UYL
+38,Tapuruquara Airport,IRZ
+39,Jurien Bay Airport,JUR
+40,Ponta do Ouro Airport,PDD
+41,Gorakhpur Airport,GOP
+42,"Oslo, Fornebu Airport",FBU
+43,El Recreo Airport,ELJ
+44,Oshakati Airport,OHI
+45,Emo River Airstrip,EMO
+46,Daytona Beach International Airport,DAB
+47,Ardmore Downtown Executive Airport,AHD
+48,Takhli Airport,TKH
+49,Dadu Airport,DDU
+50,Sentani International Airport,DJJ
+51,Lympne Airport,LYM
+52,Londolozi Airport,LDZ
+53,Louis Armstrong New Orleans International Airport,MSY
+54,Spring Creek Airport,SCG
+55,Alldays Airport,ADY
+56,A L Mangham Jr. Regional Airport,OCH
+57,Great Barrier Aerodrome,GBZ
+58,Boundiali Airport,BXI
+59,O R Tambo International,JNB
+60,Kempegowda International Airport,BLR
+61,Riverton Regional Airport,RIW
+62,Bimin Airport,BIZ
+63,Daloa Airport,DJO
+64,Indira Gandhi International Airport,DEL
+65,Arapiraca Airport,APQ
+66,Liepāja International Airport,LPX
+67,Puerto Paez Airport,PPZ
+68,Nkaus Airport,NKU
+69,Mönchengladbach Airport,MGL
+70,Paris-Le Bourget Airport,LBG
+71,Wellington International Airport,WLG
+72,Guacamayas Airport,GCA
+73,Tibooburra Airport,TYB
+74,Saenz Peña Airport,SZQ
+75,Vance W. Amory International Airport,NEV
+76,Nha Trang Air Base,NHA
+77,Mahendranagar Airport,XMG
+78,Carlos Ruhl Airport,CZB
+79,Boende Airport,BNB
+80,Sachigo Lake Airport,ZPB
+81,Pontes e Lacerda Airport,LCB
+82,Congonhas Airport,CGH
+83,Carlos Miguel Gimenez Airport,PIL
+84,Jefferson County International Airport,TWD
+85,Batesville Regional Airport,BVX
+86,Bella Bella (Campbell Island) Airport,ZEL
+87,Nogliki Airport,NGK
+88,Gympie Airport,GYP
+89,Viveros Island Airport,IVI
+90,Zamzama Heliport,ZIZ
+91,Deauville-Saint-Gatien Airport,DOL
+92,Napperby Airport,NPP
+93,Valence-Chabeuil Airport,VAF
+94,Fort Yukon Airport,FYU
+95,De La Independencia Airport,QRC
+96,Kalay Airport,KMV
+97,Rae Lakes Airport,YRA
+98,Mangshi Airport,LUM
+99,Santa Vitória do Palmar Airport,CTQ
+100,Brockville - Thousand Islands Regional Tackaberry Airport,XBR
+101,Alexandra Airport,ALR
+102,Ercan International Airport,ECN
+103,Kalymnos Airport,JKL
+104,Mammoth Yosemite Airport,MMH
+105,Chelyabinsk Balandino Airport,CEK
+106,Okierabu Airport,OKE
+107,Rickenbacker International Airport,LCK
+108,Jacksonville International Airport,JAX
+109,Jingdezhen Airport,JDZ
+110,Lastourville Airport,LTL
+111,Kira Airport,KIQ
+112,Moanamani Airport,ONI
+113,RAF Benson,BEX
+114,Kar Kar Airport,KRX
+115,Whistler/Green Lake Water Aerodrome,YWS
+116,Langimar Airport,LNM
+117,Bellona/Anua Airport,BNY
+118,Tehachapi Municipal Airport,TSP
+119,Maués Airport,MBZ
+120,Zinder Airport,ZND
+121,San Salvador de Paul Airport,SVV
+122,Santorini Airport,JTR
+123,Kemi-Tornio Airport,KEM
+124,Méndez Airport,MZD
+125,Moorea Airport,MOZ
+126,Marawaka Airport,MWG
+127,Sanga Sanga Airport,TWT
+128,Stebbins Airport,WBB
+129,Coleman Municipal Airport,COM
+130,Begumpet Airport,BPM
+131,Easterwood Field,CLL
+132,Aishalton Airport,AHL
+133,Keshod Airport,IXK
+134,St Gallen Altenrhein Airport,ACH
+135,Bulagtai Resort Airport,UGT
+136,Honinabi Airport,HNN
+137,Booue Airport,BGB
+138,Banak Airport,LKL
+139,Elizabeth Field,FID
+140,New Chitose Airport,CTS
+141,Taldykorgan Airport,TDK
+142,Pyay Airport,PRU
+143,Chennai International Airport,MAA
+144,Cagliari Elmas Airport,CAG
+145,Kaieteur International Airport,KAI
+146,Leshukonskoye Airport,LDG
+147,Wilbarger County Airport,WIB
+148,Cotulla-La Salle County Airport,COT
+149,Roberts Army Heliport,SYL
+150,Angoon Seaplane Base,AGN
+151,Bouarfa Airport,UAR
+152,Fritzlar Airport,FRZ
+153,Sultan Azlan Shah Airport,IPH
+154,Achinsk Airport,ACS
+155,Pangnirtung Airport,YXP
+156,Presidente Nicolau Lobato International Airport,DIL
+157,Gorakhpur Airport,GOP
+158,Jeongseok Airport,JDG
+159,Port of Poulsbo Marina Moorage Seaplane Base,PUL
+160,King Salmon Airport,AKN
+161,Baise Youjiang Airport,AEB
+162,Alxa Right Banner Badanjilin Airport,RHT
+163,Bultfontein Airport,UTE
+164,Tum Airport,TUJ
+165,Tte. Julio Gallardo Airport,PNT
+166,Ua Pou Airport,UAP
+167,Camiguin Airport,CGM
+168,Syros Airport,JSY
+169,Francisco Beltrão Airport,FBE
+170,Kerama Airport,KJP
+171,Djambala Airport,DJM
+172,Sir Grantley Adams International Airport,BGI
+173,Frank Pais International Airport,HOG
+174,San Cristobal de las Casas Airport,SZT
+175,Kadanwari Airport,KCF
+176,New Plymouth Airport,NPL
+177,Drake Field,FYV
+178,São Borja Airport,QOJ
+179,Bella Yella Airport,BYL
+180,Viveros Island Airport,IVI
+181,Roi Et Airport,ROI
+182,London City Airport,LCY
+183,Toulouse-Blagnac Airport,TLS
+184,Tungsten (Cantung) Airport,TNS
+185,Cadete FAP Guillermo Del Castillo Paredes Airport,TPP
+186,Land's End Airport,LEQ
+187,Gdańsk Lech Wałęsa Airport,GDN
+188,Martinique Aimé Césaire International Airport,FDF
+189,Headingly Airport,HIP
+190,Kaohsiung International Airport,KHH
+191,Nyngan Airport,NYN
+192,Split Airport,SPU
+193,El Bayadh Airport,EBH
+194,Egal International Airport,HGA
+195,Sable Island Landing Strip,YSA
+196,Guardiamarina Zañartu Airport,WPU
+197,Togiak Airport,TOG
+198,Shenzhen Bao'an International Airport,SZX
+199,Menyamya Airport,MYX
+200,Amchitka Army Airfield,AHT

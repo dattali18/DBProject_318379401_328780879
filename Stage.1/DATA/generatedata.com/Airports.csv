@@ -1,0 +1,201 @@
+Airport_ID ,Airport_Name,Location
+1,Hải Phòng,ONG
+2,Karlsruhe,VHZ
+3,Wilmington,KSG
+4,Okene,BYK
+5,Jiutepec,XKH
+6,Hofors,AJY
+7,Bloemfontein,QLS
+8,Yekaterinburg,GPH
+9,Weiz,MLI
+10,Erie,PWU
+11,Illapel,BLQ
+12,Nghĩa Lộ,CNP
+13,General Lagos,RTG
+14,Marine Parade,BZD
+15,Elsene,BYM
+16,Buôn Ma Thuột,RNM
+17,El Tambo,LPS
+18,Darwin,IMK
+19,Davenport,HYM
+20,Cartagena del Chairá,FKB
+21,Kurgan,FSH
+22,Chungju,HBW
+23,Aizwal,ZYL
+24,Alençon,SRV
+25,Kilmalcolm,SBC
+26,Pamplona,YZW
+27,Levin,FOC
+28,Western Islands,TNY
+29,Đồng Xoài,XIC
+30,Asan,FLQ
+31,Galway,UXT
+32,Pinkafeld,QHX
+33,Pirna,ACJ
+34,Deutschkreutz,UUN
+35,Pickering,PSG
+36,Mukachevo,OTI
+37,Yeosu,CFF
+38,Alness,BXQ
+39,Freirina,FRJ
+40,Paularo,NVM
+41,Juazeiro do Norte,UKH
+42,Ivano-Frankivsk,USU
+43,Nivelles,TVS
+44,Sambalpur,DGR
+45,Maiduguri,IIC
+46,Mora,TIM
+47,Bajaur Agency,FOI
+48,Paya Lebar,MDL
+49,Gagliano del Capo,BEI
+50,Jilin,XQG
+51,Çarşamba,ICT
+52,Mercedes,EXE
+53,Henan,RZD
+54,Belogorsk,EOZ
+55,Xinjiang,RJO
+56,Idaho Falls,TFB
+57,Pasir Ris,XDO
+58,Illapel,LHN
+59,Sialkot,ZKB
+60,Dumai,SVL
+61,Erlangen,JQT
+62,Ödemiş,SWB
+63,Chongqing,PTM
+64,Gumi,VRS
+65,Nogales,HMS
+66,Montague,ZLF
+67,Orkanger,IRZ
+68,Karapınar,LBJ
+69,Serangoon,LNX
+70,Mora,RIT
+71,Palma de Mallorca,UQD
+72,Conca Casale,HXS
+73,Lambayeque,SFR
+74,Woutersbrakel,MID
+75,Berlin,TZP
+76,Alcobendas,XGO
+77,Cusco,VSD
+78,Sandefjord,XPN
+79,Patna,UZQ
+80,Guysborough,HAI
+81,Ningxia,BPW
+82,Enkhuizen,XPD
+83,Melilla,RAA
+84,Åkersberga,GYF
+85,Puno,UDE
+86,Ternopil,EQS
+87,Hillsboro,XWJ
+88,Bislig,FQV
+89,Harderwijk,FRA
+90,Wittenberg,GEU
+91,Teruel,TNS
+92,Aguachica,PWG
+93,Phan Rang–Tháp Chàm,IVZ
+94,Dublin,SEP
+95,Kerikeri,MXL
+96,Lipetsk,IFG
+97,Aurora,IUV
+98,Putre,ZWC
+99,Temuka,ZUH
+100,Dannevirke,CLV
+101,Sumy,ZVN
+102,Tranent,XYF
+103,Jeongeup,KKP
+104,Bukit Timah,YHQ
+105,Erciş,DJL
+106,Laurencekirk,RAW
+107,Kuruman,SBD
+108,Limón (Puerto Limón],BLB
+109,Qinghai,FBY
+110,Ipswich,PKY
+111,Dannevirke,BBQ
+112,Wellington,VGJ
+113,Shanxi,HQH
+114,Carletonville,XQB
+115,Lo Prado,COO
+116,Bucheon,CSR
+117,Valéncia,OBT
+118,Canberra,CUZ
+119,Guadalajara,MEY
+120,Tromsø,ZHQ
+121,Puerto Princesa,ARL
+122,Didim,FNN
+123,Vigo,CPE
+124,Guangxi,JUP
+125,Palagianello,KZJ
+126,Radom,ACK
+127,Pointe-au-Pic,KML
+128,Kędzierzyn-Koźle,AQS
+129,Pinkafeld,NTX
+130,Gorinchem,PJG
+131,Valéncia,TGQ
+132,Puerto López,JBI
+133,Zweibrücken,IUX
+134,Bever Bievene,BDD
+135,Balanga,QRN
+136,Jiangxi,MII
+137,Watson Lake,MRB
+138,Soledad,QJJ
+139,Galway,RCN
+140,Mỹ Tho,DYQ
+141,Balclutha,TVY
+142,Paraíso,ZUQ
+143,Bắc Giang,KYO
+144,Chiquinquirá,LRP
+145,Musina,AHW
+146,Pachuca,WKV
+147,Phan Thiết,RHL
+148,Dublin,DLY
+149,Grahamstown,PYI
+150,Haarlem,NFI
+151,Parys,YEF
+152,Canberra,CWQ
+153,Rio de Janeiro,IFB
+154,Horsham,JTL
+155,Arequipa,HTG
+156,Pukekohe,VMG
+157,Heredia,MWY
+158,Banjarbaru,SBM
+159,Montigny-lès-Metz,GMZ
+160,El Salvador,YHX
+161,Molde,CPX
+162,Cao Bằng,KBX
+163,Geesthacht,WXD
+164,Ivano-Frankivsk,JXD
+165,Mjölby,MWT
+166,Redlands,BJN
+167,Jelenia Góra,NSO
+168,Fort Collins,MDA
+169,Edremit,XYY
+170,Siquirres,RHV
+171,St. Pölten,ZEN
+172,Alacant,XYY
+173,Pamplona,RWP
+174,Overrepen,JLF
+175,Hillsboro,EWR
+176,Teralfene,GBX
+177,Granada,MXM
+178,King Township,ICZ
+179,Bida,PKM
+180,Harrisburg,TVD
+181,Queenstown,OIO
+182,Cumnock,KIM
+183,Kursk,UZD
+184,Lebach,KTD
+185,Sutton,SES
+186,Phúc Yên,HFH
+187,Arequipa,SLO
+188,Saint-Denis,GVM
+189,Rocourt,WXY
+190,Toruń,VLA
+191,Bathurst,UFY
+192,Kostroma,YLI
+193,Yangju,MZF
+194,Sasolburg,QNZ
+195,San Carlos,LLC
+196,Nîmes,BSI
+197,Gasteiz,JUD
+198,Bajaur Agency,IJW
+199,Borongan,VYU
+200,Lang,QJO
