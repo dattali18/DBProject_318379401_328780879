@@ -330,7 +330,7 @@ DROP TABLE IF EXISTS Airlines;
 ## Screen Shots of the Data
 
 - Airlines
-![Airlines](/Stage.1TABLES/airline.png)
+![Airlines](/Stage.1/TABLES/airline.png)
 
 - Airports
 ![Airports](/Stage.1/TABLES/airport.png)
@@ -348,7 +348,7 @@ DROP TABLE IF EXISTS Airlines;
 ![Booking](/Stage.1/TABLES/booking.png)
 
 - Crew Members
-![Crew Members](/Stage.1/TABLES/crew.png)
+![Crew Members](/Stage.1/TABLES/crewmember.png)
 
 
 ## Starting Queries
