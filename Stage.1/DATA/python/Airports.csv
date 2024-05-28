@@ -1,0 +1,201 @@
+AIRPORT_ID,AIRPORT_NAME,LOCATION
+1,Kagoshima airport,BOD
+2,Lic Gustavo Diaz Ordaz International airport,EWR
+3,Tirane Rinas airport,ORF
+4,Beijing Capital airport,BUR
+5,Chengdushuang Liu airport,DSM
+6,Cyril E King International airport,MDW
+7,Alicante airport,LSC
+8,Begumpet airport,WAW
+9,Southwest Florida International airport,LHR
+10,Nanning-Wuyu airport,MSQ
+11,Bergen Flesland airport,UPG
+12,Austin-Bergstrom International airport,CAN
+13,Salt Lake city International airport,RNO
+14,Cataratas del Iguazu airport,DUS
+15,London Stansted International airport,POS
+16,Sheremtyevo airport,AYT
+17,Haikou airport,SAW
+18,San Pedro airport,OKA
+19,Pinto Martins International airport,CGH
+20,Timehri International airport,MVD
+21,Palma de Mallorca airport,NRT
+22,Rio de Janeiro-Antonio Carlos Jobim Internationa,EZE
+23,Reno-Tahoe International airport,SJW
+24,Shijiazhuang,ANC
+25,Cataratas International airport,KRK
+26,Afonso Pena International airport,ROV
+27,Tan Son Nhut airport,OTP
+28,Don Miguel Hidalgo International airport,LAX
+29,Halifax International airport,GDL
+30,Tocumen International airport,SWA
+31,El Alto International airport,BNA
+32,Pinto Martins International airport,YUL
+33,Des Moines International airport,PMC
+34,Spokane International airport,OKC
+35,Singapore Changi airport,OMA
+36,Borispol airport,CUC
+37,King Abdul Aziz International airport,IGU
+38,Senador Petronio Portella airport,MCP
+39,Gen E L Logan International airport,KHN
+40,Norman Y Mineta San Jose International airport,DEN
+41,Harbin Yangjiagang airport,OVB
+42,Marignane airport,MUC
+43,Otopeni airport,NGB
+44,George Bush Intercontinental airport,CUK
+45,Adler airport,VIE
+46,Tancredo Neves International airport,GRR
+47,Hercilio Luz International airport,IND
+48,Gen E L Logan International airport,BKK
+49,Teniente Benjamin Matienzo airport,OKC
+50,Orlando International airport,SGN
+51,Burbank Glendale Pasadena airport,IAH
+52,Cataratas del Iguazu airport,SOF
+53,Belize,SFO
+54,Hong Kong International airport,SEA
+55,Calgary International airport,DTW
+56,Riga airport,DUB
+57,Simon Bolivar International airport,NTE
+58,Zhengzhou airport,GDN
+59,Shandong,NAP
+60,Kagoshima airport,TRU
+61,Ataturk Hava Limani airport,LIH
+62,Capitan Oriel Lea Plaza airport,KMG
+63,Los Garzones airport,BOI
+64,Chiang Mai International airport,IND
+65,Lic Gustavo Diaz Ordaz International airport,KHN
+66,Dallas Love Field airport,SBH
+67,Dusseldorf International airport,CDG
+68,Porto airport,LAS
+69,Ernesto Cortissoz airport,OPO
+70,Bangkok International airport,NTE
+71,Pulkuvo 2 airport,MGF
+72,Hartsfield-Jackson Atlanta International airport,TIA
+73,King Abdul Aziz International airport,DLC
+74,Kurumoch airport,SXM
+75,Greater Cincinnati International airport,OKA
+76,Miami International airport,PCL
+77,Noi Bai airport,AQP
+78,El Calafate International airport,GEO
+79,Ontario International airport,TPP
+80,Viru Viru International airport,SIN
+81,Antalya airport,KUF
+82,Paris Orly airport,YYZ
+83,Tokyo International airport,LUX
+84,Shandong,BOS
+85,San Carlos de Bariloche airport,MEM
+86,Linate airport,LGW
+87,Koltsovo airport,BHI
+88,Philip S W Goldson International airport,RUH
+89,Calgary International airport,RIX
+90,Palma de Mallorca airport,ONT
+91,Franz-Josef-Strauss airport,AQP
+92,Tampa International airport,AEP
+93,Halifax International airport,DUS
+94,Luxembourg airport,UPG
+95,Pinto Martins International airport,TPP
+96,General Mitchell International airport,XNN
+97,Huanghua airport,SVG
+98,Copenhagen airport,DUB
+99,Ontario International airport,HFE
+100,Maringa Domestic airport,JUL
+101,Indianapolis International airport,FLN
+102,Lanzhou airport,TXL
+103,Reno-Tahoe International airport,LIN
+104,Lijiang,BOS
+105,Narita International airport,DMK
+106,Surcin airport,BPN
+107,General Abelardo L Rodriguez International Airpo,HFE
+108,Albuquerque International airport,BCN
+109,Denver International airport,CUZ
+110,Jorge Chavez airport,TAO
+111,Arrecife airport,SMR
+112,Luis Munoz Marin airport,PTP
+113,Koltsovo airport,TUC
+114,Diego Aracena International airport,HAK
+115,Pinto Martins International airport,SJP
+116,Luxembourg airport,BUR
+117,Hopkins International airport,YYZ
+118,Velazco Astete airport,XIY
+119,Oakland International airport,CGK
+120,Maquehue airport,EZE
+121,Geneva airport,BOI
+122,Chongqing Jiangbei International,SLZ
+123,Nashville International airport,GRU
+124,Vancouver International airport,RIX
+125,Cap C Martinez de Pinillos airport,ANC
+126,Tucson International airport,OPO
+127,London Heathrow airport,CTS
+128,Rosario airport,BCN
+129,Eduardo Gomes International airport,DME
+130,Velazco Astete airport,OTP
+131,Presidente Castro Pinto International airport,IAD
+132,Wuchia Pa airport,THE
+133,Sky Harbor International airport,BOI
+134,Vilnius airport,CPH
+135,Greater Cincinnati International airport,TFS
+136,Memphis International airport,HND
+137,Shijiazhuang,INC
+138,Prinses Juliana International airport,UFA
+139,Kuala Lumpur International airport,DME
+140,Zhangguizhuang airport,ANF
+141,Wuchia Pa airport,PVG
+142,London Gatwick airport,TOS
+143,Ataturk Hava Limani airport,NQN
+144,Leite Lopes airport,HRB
+145,Kirbi airport,WUH
+146,Maringa Domestic airport,SKG
+147,Chicago Midway International airport,KOA
+148,Baltimore-Washington International Thurgood Mars,TRD
+149,Hamburg airport,SDF
+150,Hercilio Luz International airport,SRE
+151,Dusseldorf International airport,HOU
+152,Haikou airport,CGN
+153,Xining airport,GEO
+154,Tancredo Neves International airport,IAH
+155,Los Angeles International airport,MRS
+156,Brussels airport,MAO
+157,Balice airport,AMS
+158,Albuquerque International airport,LGW
+159,Tampa International airport,SKG
+160,Capitan Oriel Lea Plaza airport,GLA
+161,Cyril E King International airport,VCP
+162,Dabolim airport,GLA
+163,Silvio Pettirossi International airport,GEO
+164,San Pedro airport,OKC
+165,Jakarta International airport,VIX
+166,Campo Grande International airport,CDG
+167,Salt Lake city International airport,JDO
+168,Palonegro airport,YNT
+169,San Carlos de Bariloche airport,YWG
+170,Tocumen International airport,PUQ
+171,Huanghua airport,SJW
+172,Yinchuan airport,COK
+173,El Calafate International airport,LIN
+174,Southwest Florida International airport,DAC
+175,Porto airport,IBZ
+176,Gen E L Logan International airport,CGK
+177,Port Columbus International airport,PVH
+178,Charles de Gaulle International airport,KUL
+179,Philadelphia International airport,FTE
+180,Bologna airport,IND
+181,Keflavik International,IOS
+182,Sao Jose do Rio Preto airport,SVG
+183,El Plumerillo airport,STR
+184,Mccarran International airport,WNZ
+185,Leonardo da Vinci International airport,CGO
+186,Jorge Chavez airport,CIX
+187,Nice-Cote d'Azur airport,OVB
+188,Rafael Nunez airport,UDI
+189,Abu Dhabi International airport,AMD
+190,Pittsburgh International airport,RSW
+191,Tocumen International airport,KOJ
+192,Begumpet airport,CNF
+193,Nice-Cote d'Azur airport,AUH
+194,Kansas city International airport,CGO
+195,Ningbo airport,SPR
+196,Matecana airport,UFA
+197,Viracopos International airport,CGN
+198,Bahia Blanca Cte Espora Naval Air Base,ALC
+199,San Francisco International airport,BHX
+200,Governador Andre Franco Montoro International Ai,NQN
