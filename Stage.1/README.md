@@ -321,11 +321,16 @@ DROP TABLE IF EXISTS Airlines;
 
 ## Generating the Data
 
-### `macharoo.com` & `generatedata.com` & `python`
+### `macaroo.com` & `generatedata.com` & `python`
 
 1. using `mockaroo.com` to generate the data for the database
 2. The data was generated in `CSV` format
 3. The data was then imported into the database using the `SQL` command
+
+<!-- screen shots -->
+![macaroo](/Stage.1/DATA/SCREEN_SHOTS/macaroo.com.png)
+
+![python](/Stage.1/DATA/SCREEN_SHOTS/python.png)
 
 ## Screen Shots of the Data
 
