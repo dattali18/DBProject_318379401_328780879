@@ -108,6 +108,7 @@ WHERE
 AND 
     (f.Arrival_Time - f.Departure_Time) > avg_flight_duration.Avg_Flight_Duration_Days
 ORDER BY 
+        f.Flight_Number;
 ```
 
 ![Query 6](./Images/select-6.png)
