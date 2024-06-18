@@ -15,7 +15,7 @@ WHERE f.DEPARTURE_AIRPORT = (SELECT AIRPORT_ID FROM Airports WHERE LOCATION = 'J
 AND f.DEPARTURE_TIME >= TO_DATE('2024-05-15') AND f.DEPARTURE_TIME < TO_DATE('2024-05-16');
 ```
 
-![Query 1](./images/select-1.png)
+![Query 1](./Images/select-1.png)
 
 2. **Query 2**: Find the flight details (flight number, departure/arrival airports, aircraft type, and airline name) for flights with a specific aircraft type. for example if there was a class action lawsuit exainst boeing we could find all the passengers that could be elegeble for componsestion
 
@@ -29,7 +29,7 @@ JOIN Airlines al ON f.AIRLINE_ID = al.AIRLINE_ID
 WHERE a.AIRCRAFT_TYPE = 'Boeing 737';
 ```
 
-![Query 2](./images/select-2.png)
+![Query 2](./Images/select-2.png)
 
 3. **Query 3**: Get the total number of bookings and the average passenger age for each flight, ordered by the flight number. for admin & marketing reasons
 
@@ -42,7 +42,7 @@ GROUP BY f.FLIGHT_NUMBER
 ORDER BY f.FLIGHT_NUMBER;
 ```
 
-![Query 3](./images/select-3.png)
+![Query 3](./Images/select-3.png)
 
 4. **Query 4**: Retrieve the crew members' names and roles for flights with a specific departure airport and arrival airport on a given date range.
 
