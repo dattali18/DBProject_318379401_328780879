@@ -120,7 +120,7 @@ ORDER BY
 ```sql
 DELETE FROM Bookings
 WHERE PASSENGER_ID = (SELECT PASSENGER_ID FROM Passengers WHERE PASSENGER_NAME = 'John Doe')
- AND BOOKING_TIME >= TO_DATE('2024-05-16');
+ AND BOOKINGS.BOOKING_DATE >= TO_DATE('2024-05-16');
 ```
 
 2. **Query 2**: Remove flights with a specific flight status and departure/arrival airport combination.
@@ -137,7 +137,7 @@ WHERE FLIGHT_STATUS = 'Cancelled'
 ```sql
 DELETE FROM Bookings
 WHERE PASSENGER_ID IN (SELECT PASSENGER_ID FROM Passengers WHERE PASSENGER_AGE > 90)
- AND BOOKING_TIME >= TO_DATE('2024-05-16');
+ AND BOOKINGS.BOOKING_DATE >= TO_DATE('2024-05-16');
 ```
 4. In order to keep the database clean, once a day all tickets purchased for canceled flights are deleted from the system
 
@@ -167,11 +167,17 @@ WHERE DEPARTURE_AIRPORT = (SELECT AIRPORT_ID FROM Airports WHERE AIRPORT_NAME = 
 2. **Query 2**: Change the aircraft type for flights operated by a specific airline.
 
 ```sql
-UPDATE Flights f
-JOIN Aircraft a ON f.AIRCRAFT_ID = a.AIRCRAFT_ID
+UPDATE Aircraft a
 SET a.AIRCRAFT_TYPE = 'Airbus A320'
-WHERE f.AIRLINE_ID = (SELECT AIRLINE_ID FROM Airlines WHERE AIRLINE_NAME = 'Delta Air Lines');
+WHERE a.AIRCRAFT_ID IN (
+    SELECT f.AIRCRAFT_ID
+    FROM Flights f
+    JOIN Airlines al ON f.AIRLINE_ID = al.AIRLINE_ID
+    WHERE al.AIRLINE_NAME = 'Delta Air Lines'
+);
 ```
+
+
 ![Update 2](./Images/update-2.png)
 
 
@@ -185,6 +191,7 @@ WHERE Arrival_Time < SYSDATE;
 
 ## Query With Parameters
 
+![Parameters](./Images/parameters.png)
 
 1. **Query 1**: Retrieve passenger details (name, phone, email) for passengers who have a booking on a flight with a given flight number.
 
@@ -199,15 +206,22 @@ WHERE f.FLIGHT_NUMBER = :flight_number;
 2. **Query 2**: Find the flight details (flight number, departure/arrival airports, airline name) for flights operated by a specific airline and departing from a given airport on a specific date.
 
 ```sql
-SELECT f.FLIGHT_NUMBER, dep.AIRPORT_NAME AS DEPARTURE_AIRPORT, arr.AIRPORT_NAME AS ARRIVAL_AIRPORT, al.AIRLINE_NAME
+SELECT f.FLIGHT_NUMBER,
+       dep.AIRPORT_NAME AS DEPARTURE_AIRPORT,
+       arr.AIRPORT_NAME AS ARRIVAL_AIRPORT,
+       al.AIRLINE_NAME
 FROM Flights f
 JOIN Airports dep ON f.DEPARTURE_AIRPORT = dep.AIRPORT_ID
 JOIN Airports arr ON f.ARRIVAL_AIRPORT = arr.AIRPORT_ID
 JOIN Airlines al ON f.AIRLINE_ID = al.AIRLINE_ID
 WHERE al.AIRLINE_NAME = :airline_name
- AND dep.AIRPORT_NAME = :departure_airport
- AND f.DEPARTURE_TIME >= :departure_airport AND f.DEPARTURE_TIME < DATEADD(DAY, 1, :departure_date);
+  AND dep.AIRPORT_NAME = :departure_airport
+  AND f.DEPARTURE_TIME >= :departure_date
+  AND f.DEPARTURE_TIME < :departure_date + 1;
+
 ```
+
+![Query 2](./Images/query-2-param.png)
 
 3. **Query 3**: Get the total number of bookings and the average passenger age for flights with a specific aircraft capacity range.
 
@@ -240,7 +254,7 @@ Add a NOT NULL constraint to the CREW_ROLE column in the CrewMembers table to en
 
 ```sql
 ALTER TABLE CrewMembers
-ALTER COLUMN CREW_ROLE VARCHAR(50) NOT NULL;
+MODIFY (CREW_ROLE VARCHAR2(50) NOT NULL);
 ```
 
 ### 2. CHECK Constraint
@@ -257,7 +271,5 @@ Add a DEFAULT constraint to the BOOKING_DATE column in the Bookings table to set
 
 ```sql
 ALTER TABLE Bookings
-ADD CONSTRAINT DF_BookingDate DEFAULT GETDATE() FOR BOOKING_DATE;
+MODIFY (BOOKING_DATE DEFAULT SYSDATE);
 ```
-
-These are just examples, and you can modify or create additional queries based on your specific requirements and the data in your database.
