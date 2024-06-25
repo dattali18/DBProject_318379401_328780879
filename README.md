@@ -12,3 +12,7 @@
 ## Stage 2:
 
 [Stage 2 Report](Stage.2/README.md)
+
+## Stage 3:
+
+[Stage 3 Report](Stage.3/README.md)
