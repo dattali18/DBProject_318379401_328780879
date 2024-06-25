@@ -11,3 +11,5 @@ select * from Passengers;
 select * from CrewMembers;
 
 select * from Bookings;
+
+select * from Has;

@@ -1,20 +1,20 @@
 -- Drop the Booking table first
-DROP TABLE IF EXISTS Booking;
+DROP TABLE Bookings;
 
 -- Drop the Flights table
-DROP TABLE IF EXISTS Flights;
+DROP TABLE Flights;
 
 -- Drop the Passengers table
-DROP TABLE IF EXISTS Passengers;
+DROP TABLE Passengers;
 
 -- Drop the CrewMembers table
-DROP TABLE IF EXISTS CrewMembers;
+DROP TABLE CrewMembers;
 
 -- Drop the Aircraft table
-DROP TABLE IF EXISTS Aircrafts;
+DROP TABLE Aircraft;
 
 -- Drop the Airlines table
-DROP TABLE IF EXISTS Airlines;
+DROP TABLE Airlines;
 
 -- Drop the Airports table last
-DROP TABLE IF EXISTS Airports;
+DROP TABLE Airports;
