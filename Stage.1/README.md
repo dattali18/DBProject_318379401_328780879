@@ -307,6 +307,11 @@ CREATE TABLE CrewMembers
   FOREIGN KEY (FLIGHT_ID) REFERENCES Flights(FLIGHT_ID)
 );
 ```
+
+![alt text](Images/image-2.png)
+![alt text](Images/image-3.png)
+
+
 ### Drop Script
 
 ```sql
@@ -318,6 +323,9 @@ DROP TABLE IF EXISTS Aircraft;
 DROP TABLE IF EXISTS Airports;
 DROP TABLE IF EXISTS Airlines;
 ```
+
+![alt text](Images/image.png)
+![alt text](Images/image-1.png)
 
 ## Generating the Data
 
@@ -355,9 +363,14 @@ DROP TABLE IF EXISTS Airlines;
 - Crew Members
 ![Crew Members](/Stage.1/TABLES/crewmember.png)
 
+## Insertion of Data
+
+![alt text](Images/image-4.png)
+![alt text](Images/image-5.png)
+![alt text](Images/image-6.png)
 
 ## Backup Process
 
-![img.png](img.png)
-![img_1.png](img_1.png)
-![img_2.png](img_2.png)
+![img.png](Images/img.png)
+![img_1.png](Images/img1.png)
+![img_2.png](Images/img2.png)

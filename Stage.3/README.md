@@ -9,15 +9,15 @@
 ## Function
 
 1. `GET_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE`
-    - Input: `aircraft_type_id INT`
-    - Output: `junior_flight_attendants`
-    - Description: Returns all junior flight attendants that are qualified to work on an aircraft of a given type.
+   - Input: `aircraft_type_id INT`
+   - Output: `junior_flight_attendants`
+   - Description: Returns all junior flight attendants that are qualified to work on an aircraft of a given type.
 
-> **Note:** 
+> **Note:**
 > The purpose of this function is:
+>
 > - To get all junior flight attendants that are qualified to work on an aircraft of a given type.
 > - To promote all junior flight attendants that are qualified to work on an aircraft of a given type to senior flight attendants.
-
 
 ```sql
 CREATE OR REPLACE FUNCTION GET_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE(aircraft_type IN VARCHAR2)
@@ -37,13 +37,13 @@ END;
 ```
 
 2. `calculate_available_seats`
-    - Input: `flight_id INT`
-    - Output: `available_seats`
-    - Description: Returns the number of available seats on a given flight.
-
+   - Input: `flight_id INT`
+   - Output: `available_seats`
+   - Description: Returns the number of available seats on a given flight.
 
 > **Note:**
 > The purpose of this function is:
+>
 > - To calculate the number of available seats on a given flight.
 > - To update the status of a given flight to a new status.
 
@@ -115,11 +115,12 @@ END calculate_available_seats;
 ## Procedures
 
 1. `PROMOTE_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE`
-    - Input: `aircraft_type_id INT`
-    - Description: Promotes all junior flight attendants that are qualified to work on an aircraft of a given type to senior flight attendants.
+   - Input: `aircraft_type_id INT`
+   - Description: Promotes all junior flight attendants that are qualified to work on an aircraft of a given type to senior flight attendants.
 
 > **Note:**
 > The purpose of this procedure is:
+>
 > - To promote all junior flight attendants that are qualified to work on an aircraft of a given type to senior flight attendants.
 > - To update the status of a given flight to a new status.
 
@@ -150,11 +151,12 @@ END;
 ```
 
 2. `update_flight_status`
-    - Input: `flight_id INT, new_status VARCHAR`
-    - Description: Updates the status of a given flight to a new status.
+   - Input: `flight_id INT, new_status VARCHAR`
+   - Description: Updates the status of a given flight to a new status.
 
 > **Note:**
 > The purpose of this procedure is:
+>
 > - To update the status of a given flight to a new status.
 > - To calculate the number of available seats on a given flight.
 
@@ -185,7 +187,7 @@ IS
 BEGIN
     -- Get flight details
     SELECT flight_number, departure_time, arrival_time
-    INTO v_flight_details.flight_number, v_flight_details.scheduled_departure, 
+    INTO v_flight_details.flight_number, v_flight_details.scheduled_departure,
          v_flight_details.scheduled_arrival
     FROM Flights
     WHERE flight_id = p_flight_id;
@@ -222,13 +224,13 @@ END update_flight_status;
 ## Main Program
 
 1. `main_program_1`
-    - Description: Calls the `GET_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE` function with a given aircraft type ID and prints the results.
+   - Description: Calls the `GET_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE` function with a given aircraft type ID and prints the results.
 
 ```sql
 DECLARE
-    v_aircraft_type VARCHAR2(50) := 'Boeing 737'; 
-    crew_cursor SYS_REFCURSOR; 
-    v_crew_id NUMBER; 
+    v_aircraft_type VARCHAR2(50) := 'Boeing 737';
+    crew_cursor SYS_REFCURSOR;
+    v_crew_id NUMBER;
 BEGIN
     PROMOTE_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE(v_aircraft_type);
 
@@ -253,7 +255,7 @@ END;
 ```
 
 2. `main_program_2`
-    - Description: Calls the `calculate_available_seats` function with a given flight ID and prints the results.
+   - Description: Calls the `calculate_available_seats` function with a given flight ID and prints the results.
 
 ```sql
 DECLARE
@@ -284,7 +286,6 @@ END;
 ### Output of the `calculate_available_seats` function
 
 ![alt text](Images/image.png)
-
 
 ### Output of the `PROMOTE_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE` procedure
 

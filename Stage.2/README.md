@@ -34,12 +34,15 @@ WHERE a.AIRCRAFT_TYPE = 'Boeing 737';
 3. **Query 3**: Get the total number of bookings and the average passenger age for each flight, ordered by the flight number. for admin & marketing reasons
 
 ```sql
-SELECT f.FLIGHT_NUMBER, COUNT(b.BOOKING_ID) AS TOTAL_BOOKINGS, AVG(p.PASSENGER_AGE) AS AVG_PASSENGER_AGE
+SELECT f.FLIGHT_NUMBER, 
+       COUNT(b.BOOKING_ID) AS TOTAL_BOOKINGS, 
+       AVG(EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM p.PASSENGER_BIRTHDATE)) AS AVG_PASSENGER_AGE
 FROM Flights f
-LEFT JOIN Bookings b ON f.FLIGHT_ID = b.FLIGHT_ID
+LEFT JOIN Booking b ON f.FLIGHT_ID = b.FLIGHT_ID
 LEFT JOIN Passengers p ON b.PASSENGER_ID = p.PASSENGER_ID
 GROUP BY f.FLIGHT_NUMBER
-ORDER BY f.FLIGHT_NUMBER;
+ORDER BY f.FLIGHT_NUMBER
+
 ```
 
 ![Query 3](./Images/select-3.png)
@@ -49,10 +52,13 @@ ORDER BY f.FLIGHT_NUMBER;
 ```sql
 SELECT cm.CREW_NAME, cm.CREW_ROLE
 FROM CrewMembers cm
-JOIN Flights f ON cm.FLIGHT_ID = f.FLIGHT_ID
+JOIN WorkingCrew wc ON cm.CREW_ID = wc.CREW_ID
+JOIN Flights f ON wc.FLIGHT_ID = f.FLIGHT_ID
 WHERE f.DEPARTURE_AIRPORT = (SELECT AIRPORT_ID FROM Airports WHERE AIRPORT_NAME = 'JFK Airport New York')
  AND f.ARRIVAL_AIRPORT = (SELECT AIRPORT_ID FROM Airports WHERE AIRPORT_NAME = 'LAX Airport Los Angeles')
- AND f.DEPARTURE_TIME >= '2023-06-01' AND f.DEPARTURE_TIME < '2023-06-15';
+ AND f.DEPARTURE_TIME >= TO_DATE('2023-06-01', 'YYYY-MM-DD')
+ AND f.DEPARTURE_TIME < TO_DATE('2023-06-15', 'YYYY-MM-DD'
+
 ```
 
 
@@ -136,8 +142,9 @@ WHERE FLIGHT_STATUS = 'Cancelled'
 
 ```sql
 DELETE FROM Bookings
-WHERE PASSENGER_ID IN (SELECT PASSENGER_ID FROM Passengers WHERE PASSENGER_AGE > 90)
- AND BOOKINGS.BOOKING_DATE >= TO_DATE('2024-05-16');
+WHERE PASSENGER_ID IN (SELECT PASSENGER_ID FROM Passengers WHERE EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM PASSENGER_BIRTHDATE) > 90)
+AND BOOKING_DATE >= TO_DATE('2024-05-16', 'YYYY-MM-DD');
+
 ```
 4. In order to keep the database clean, once a day all tickets purchased for canceled flights are deleted from the system
 
@@ -226,13 +233,16 @@ WHERE al.AIRLINE_NAME = :airline_name
 3. **Query 3**: Get the total number of bookings and the average passenger age for flights with a specific aircraft capacity range.
 
 ```sql
-SELECT f.FLIGHT_NUMBER, COUNT(b.BOOKING_ID) AS TOTAL_BOOKINGS, AVG(p.PASSENGER_AGE) AS AVG_PASSENGER_AGE
+SELECT f.FLIGHT_NUMBER, 
+       COUNT(b.BOOKING_ID) AS TOTAL_BOOKINGS, 
+       AVG(EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM p.PASSENGER_BIRTHDATE)) AS AVG_PASSENGER_AGE
 FROM Flights f
 JOIN Bookings b ON f.FLIGHT_ID = b.FLIGHT_ID
 JOIN Passengers p ON b.PASSENGER_ID = p.PASSENGER_ID
 JOIN Aircraft a ON f.AIRCRAFT_ID = a.AIRCRAFT_ID
 WHERE a.CAPACITY >= :min_capacity AND a.CAPACITY <= :max_capacity
-GROUP BY f.FLIGHT_NUMBER;
+GROUP BY f.FLIGHT_NUMBER
+
 ```
 
 4. **Query 4**: Retrieve the crew members' names and roles for flights operated by a specific airline and departing/arriving on a given date range.
@@ -240,11 +250,18 @@ GROUP BY f.FLIGHT_NUMBER;
 ```sql
 SELECT cm.CREW_NAME, cm.CREW_ROLE
 FROM CrewMembers cm
-JOIN Flights f ON cm.FLIGHT_ID = f.FLIGHT_ID
+JOIN WorkingCrew wc ON cm.CREW_ID = wc.CREW_ID
+JOIN Flights f ON wc.FLIGHT_ID = f.FLIGHT_ID
 JOIN Airlines al ON f.AIRLINE_ID = al.AIRLINE_ID
 WHERE al.AIRLINE_NAME = :airline_name
- AND f.DEPARTURE_TIME >= :start_date AND f.ARRIVAL_TIME <= :end_date;
+  AND f.DEPARTURE_TIME >= :start_date 
+  AND f.ARRIVAL_TIME <= :end_date;
 ```
+
+### Queries with & parameters
+
+![alt text](Images/image.png)
+![alt text](Images/image-1.png)
 
 ## Constraints
 
@@ -263,7 +280,15 @@ Add a CHECK constraint to the Passengers table to ensure that the passenger age 
 
 ```sql
 ALTER TABLE Passengers
-ADD CONSTRAINT CHK_PassengerAge CHECK (PASSENGER_AGE >= 18 AND PASSENGER_AGE <= 100);
+ADD CONSTRAINT CHK_PassengerAge 
+CHECK (
+    (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM PASSENGER_BIRTHDATE)) - 
+    CASE 
+        WHEN TO_CHAR(SYSDATE, 'MMDD') < TO_CHAR(PASSENGER_BIRTHDATE, 'MMDD') THEN 1 
+        ELSE 0 
+    END 
+    BETWEEN 18 AND 100
+);
 ```
 ### 3. DEFAULT Constraint
 
