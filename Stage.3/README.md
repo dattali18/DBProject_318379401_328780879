@@ -27,7 +27,8 @@ BEGIN
     OPEN crew_cursor FOR
     SELECT cm.CREW_ID
     FROM CrewMembers cm
-    JOIN Flights f ON cm.FLIGHT_ID = f.FLIGHT_ID
+    JOIN WorkingCrew wc ON cm.CREW_ID = wc.CREW_ID
+    JOIN Flights f ON wc.FLIGHT_ID = f.FLIGHT_ID
     JOIN Aircraft a ON f.AIRCRAFT_ID = a.AIRCRAFT_ID
     WHERE a.AIRCRAFT_TYPE = aircraft_type
     AND cm.CREW_ROLE = 'Junior Flight Attendant';
@@ -88,7 +89,7 @@ BEGIN
     -- Count booked seats using cursor
     SELECT COUNT(*)
     INTO v_booked_seats
-    FROM Bookings
+    FROM Booking
     WHERE flight_id = p_flight_id;
 
     -- Calculate available seats
@@ -146,6 +147,9 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         ROLLBACK;
+        IF crew_cursor%ISOPEN THEN
+            CLOSE crew_cursor;
+        END IF;
         RAISE;
 END;
 ```
@@ -170,7 +174,7 @@ IS
     -- Cursor for passenger information
     CURSOR c_passengers IS
         SELECT p.passenger_id, p.passenger_name, p.passenger_email
-        FROM Bookings b
+        FROM Booking b
         JOIN Passengers p ON b.passenger_id = p.passenger_id
         WHERE b.flight_id = p_flight_id;
 
@@ -187,7 +191,7 @@ IS
 BEGIN
     -- Get flight details
     SELECT flight_number, departure_time, arrival_time
-    INTO v_flight_details.flight_number, v_flight_details.scheduled_departure,
+    INTO v_flight_details.flight_number, v_flight_details.scheduled_departure, 
          v_flight_details.scheduled_arrival
     FROM Flights
     WHERE flight_id = p_flight_id;
@@ -228,9 +232,9 @@ END update_flight_status;
 
 ```sql
 DECLARE
-    v_aircraft_type VARCHAR2(50) := 'Boeing 737';
-    crew_cursor SYS_REFCURSOR;
-    v_crew_id NUMBER;
+    v_aircraft_type VARCHAR2(50) := 'Boeing 737'; 
+    crew_cursor SYS_REFCURSOR; 
+    v_crew_id NUMBER; 
 BEGIN
     PROMOTE_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE(v_aircraft_type);
 
@@ -241,7 +245,7 @@ BEGIN
     IF crew_cursor%NOTFOUND THEN
         DBMS_OUTPUT.PUT_LINE('The program was successful');
     ELSE
-        DBMS_OUTPUT.PUT_LINE('ERROR there are crew member with the role "Junior Flight Attendant".');
+        DBMS_OUTPUT.PUT_LINE('ERROR: There are crew members with the role "Junior Flight Attendant".');
     END IF;
 
     CLOSE crew_cursor;
@@ -294,3 +298,36 @@ END;
 ![alt text](Images/image-2.png)
 
 ![alt text](Images/image-3.png)
+
+
+### Before run main 1
+
+![alt text](image.png)
+
+### run1 result
+
+![alt text](image-1.png)
+
+### FUNCTION1
+
+![alt text](image-2.png)
+
+# PROCEDURE1
+
+![alt text](image-3.png)
+
+### Before run main 1
+
+![alt text](image-4.png)
+
+### run2 result
+
+![alt text](image-5.png)
+
+### FUNCTION2
+
+![alt text](image-6.png)
+
+# PROCEDURE2
+
+![alt text](image-7.png)
