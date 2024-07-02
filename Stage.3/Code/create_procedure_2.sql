@@ -11,6 +11,7 @@ IS
         JOIN Passengers p ON b.passenger_id = p.passenger_id
         WHERE b.flight_id = p_flight_id;
 
+
     -- Record type for flight details
     TYPE flight_details_rec IS RECORD (
         flight_number VARCHAR2(15),
