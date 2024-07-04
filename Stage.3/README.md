@@ -1,5 +1,7 @@
 # Stage 3 Report
 
+> [NOTE!] the first part is the function and explaintion in text and the second part is the code and the screenshots output of the code.
+
 ## Code Requirements
 
 - 2 function
@@ -7,6 +9,10 @@
 - 2 main program
 
 ## Function
+
+### GET_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE
+
+This function, GET_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE, is used to retrieve all junior flight attendants qualified to work on a specific type of aircraft. It takes the aircraft type as an input and returns a cursor containing the IDs of the junior flight attendants. This function is useful in scenarios where you need to identify and potentially promote junior flight attendants based on their qualifications for a specific aircraft type. For example, if an airline introduces a new aircraft model and wants to ensure that junior flight attendants qualified for the previous model are also qualified and promoted for the new one, this function can identify the relevant crew members.
 
 1. `GET_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE`
    - Input: `aircraft_type_id INT`
@@ -36,6 +42,10 @@ BEGIN
     RETURN crew_cursor;
 END;
 ```
+
+### calculate_available_seats
+
+The calculate_available_seats function calculates the number of available seats on a given flight by subtracting the number of booked seats from the total capacity of the aircraft. It takes a flight ID as input and returns the number of available seats. This function is essential for managing flight bookings and ensuring that the flight status is updated based on seat availability. A typical use case is during the booking process, where the system needs to verify seat availability before confirming a booking. For instance, an airline can use this function to check available seats before allowing additional bookings or making decisions about overbooking policies.
 
 2. `calculate_available_seats`
    - Input: `flight_id INT`
@@ -115,6 +125,10 @@ END calculate_available_seats;
 
 ## Procedures
 
+### PROMOTE_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE
+
+The procedure PROMOTE_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE promotes all junior flight attendants qualified to work on a specific type of aircraft to senior flight attendants. It utilizes the function GET_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE to fetch the IDs of the qualified crew members and then updates their roles in the database. This procedure is particularly useful during organizational changes or crew promotions when there is a need to elevate the roles of qualified junior flight attendants systematically. For example, when an airline decides to promote all junior flight attendants who have completed a certain number of hours or flights on a particular aircraft type, this procedure can automate the promotion process.
+
 1. `PROMOTE_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE`
    - Input: `aircraft_type_id INT`
    - Description: Promotes all junior flight attendants that are qualified to work on an aircraft of a given type to senior flight attendants.
@@ -153,6 +167,11 @@ EXCEPTION
         RAISE;
 END;
 ```
+
+
+### update_flight_status
+
+The update_flight_status procedure updates the status of a given flight based on the current time compared to the flight's scheduled departure and arrival times. It determines whether the flight is scheduled, in flight, or arrived, and updates the flight status accordingly. This procedure is crucial for maintaining accurate and up-to-date flight information, which is essential for both operational efficiency and customer communication. A typical scenario is during regular system updates, where the airline's operations control center needs to refresh the status of all flights. For instance, as the current time progresses, this procedure ensures that flight statuses are updated from "Scheduled" to "In Flight" or "Arrived" as appropriate.
 
 2. `update_flight_status`
    - Input: `flight_id INT, new_status VARCHAR`
