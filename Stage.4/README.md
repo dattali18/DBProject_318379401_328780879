@@ -38,3 +38,24 @@ place-holder-for-image + explantion (create two views that are not already in th
 
 place-holder-for-image + explantion (create two queries on the views) + declaration of the queries + image-of-result
 
+### ייבוא הקובץ של הקבוצה השניה
+
+![alt text](image.png)
+
+### שינוי שמות הטבלאות אצלינו בעלי שם זהה
+
+![alt text](image-1.png)
+
+### יצירת טבלה JoinedPassengers חדשה והעברת כל הנתונים הטבלאות הקודמות
+
+![alt text](image-2.png)
+
+### יצירת רצף מספרים שיחליף את המספר מזהה בטבלה החדשה(בשני הטבלאת יש את אותם מספרים מזהים)
+### יצירת הטבלה החדשה
+### העברת הנתונים לטבלה החדשה
+
+![alt text](image-3.png)
+
+### יצירת קובץ גיבוי חדש של כל הטבלאות משני הפרויקטים ןהטבלאות המשוטפות
+
+![alt text](image-4.png)
