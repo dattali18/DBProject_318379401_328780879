@@ -34,12 +34,15 @@ WHERE a.AIRCRAFT_TYPE = 'Boeing 737';
 3. **Query 3**: Get the total number of bookings and the average passenger age for each flight, ordered by the flight number. for admin & marketing reasons
 
 ```sql
-SELECT f.FLIGHT_NUMBER, COUNT(b.BOOKING_ID) AS TOTAL_BOOKINGS, AVG(p.PASSENGER_AGE) AS AVG_PASSENGER_AGE
+SELECT f.FLIGHT_NUMBER,
+       COUNT(b.BOOKING_ID) AS TOTAL_BOOKINGS,
+       AVG(EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM p.PASSENGER_BIRTHDATE)) AS AVG_PASSENGER_AGE
 FROM Flights f
-LEFT JOIN Bookings b ON f.FLIGHT_ID = b.FLIGHT_ID
+LEFT JOIN Booking b ON f.FLIGHT_ID = b.FLIGHT_ID
 LEFT JOIN Passengers p ON b.PASSENGER_ID = p.PASSENGER_ID
 GROUP BY f.FLIGHT_NUMBER
-ORDER BY f.FLIGHT_NUMBER;
+ORDER BY f.FLIGHT_NUMBER
+
 ```
 
 ![Query 3](./Images/select-3.png)
@@ -49,27 +52,29 @@ ORDER BY f.FLIGHT_NUMBER;
 ```sql
 SELECT cm.CREW_NAME, cm.CREW_ROLE
 FROM CrewMembers cm
-JOIN Flights f ON cm.FLIGHT_ID = f.FLIGHT_ID
+JOIN WorkingCrew wc ON cm.CREW_ID = wc.CREW_ID
+JOIN Flights f ON wc.FLIGHT_ID = f.FLIGHT_ID
 WHERE f.DEPARTURE_AIRPORT = (SELECT AIRPORT_ID FROM Airports WHERE AIRPORT_NAME = 'JFK Airport New York')
  AND f.ARRIVAL_AIRPORT = (SELECT AIRPORT_ID FROM Airports WHERE AIRPORT_NAME = 'LAX Airport Los Angeles')
- AND f.DEPARTURE_TIME >= '2023-06-01' AND f.DEPARTURE_TIME < '2023-06-15';
-```
+ AND f.DEPARTURE_TIME >= TO_DATE('2023-06-01', 'YYYY-MM-DD')
+ AND f.DEPARTURE_TIME < TO_DATE('2023-06-15', 'YYYY-MM-DD'
 
+```
 
 ![Query 4](./Images/select-4.png)
 
 5. An airline manager wants to check the monthly and annual number of flights in order to analyze seasonal and annual trends
 
 ```sql
-SELECT 
+SELECT
     EXTRACT(YEAR FROM f.Departure_Time) AS Year,
     EXTRACT(MONTH FROM f.Departure_Time) AS Month,
     COUNT(f.Flight_ID) AS Number_of_Flights
-FROM 
+FROM
     Flights f
-GROUP BY 
+GROUP BY
     EXTRACT(YEAR FROM f.Departure_Time), EXTRACT(MONTH FROM f.Departure_Time)
-ORDER BY 
+ORDER BY
     Year DESC, Month DESC;
 ```
 
@@ -78,36 +83,36 @@ ORDER BY
 6. An airline manager would like to know which of the flights is exceeding the average flight time and by how long
 
 ```sql
-SELECT 
+SELECT
     f.Flight_Number,
     air.Airline_Name,
     p.Passenger_Name,
     (f.Arrival_Time - f.Departure_Time) AS Flight_Duration_Days,
     avg_flight_duration.Avg_Flight_Duration_Days
-FROM 
+FROM
     Flights f
-JOIN 
+JOIN
     Airlines air ON f.Airline_ID = air.Airline_ID
-JOIN 
+JOIN
     Bookings b ON f.Flight_ID = b.Flight_ID
-JOIN 
+JOIN
     Passengers p ON b.Passenger_ID = p.Passenger_ID
 JOIN (
-    SELECT 
+    SELECT
         f2.Airline_ID,
         AVG(f2.Arrival_Time - f2.Departure_Time) AS Avg_Flight_Duration_Days
-    FROM 
+    FROM
         Flights f2
-    WHERE 
+    WHERE
         f2.Flight_Status = 'Arrived'
-    GROUP BY 
+    GROUP BY
         f2.Airline_ID
 ) avg_flight_duration ON f.Airline_ID = avg_flight_duration.Airline_ID
-WHERE 
+WHERE
     f.Flight_Status = 'Arrived'
-AND 
+AND
     (f.Arrival_Time - f.Departure_Time) > avg_flight_duration.Avg_Flight_Duration_Days
-ORDER BY 
+ORDER BY
         f.Flight_Number;
 ```
 
@@ -136,9 +141,11 @@ WHERE FLIGHT_STATUS = 'Cancelled'
 
 ```sql
 DELETE FROM Bookings
-WHERE PASSENGER_ID IN (SELECT PASSENGER_ID FROM Passengers WHERE PASSENGER_AGE > 90)
- AND BOOKINGS.BOOKING_DATE >= TO_DATE('2024-05-16');
+WHERE PASSENGER_ID IN (SELECT PASSENGER_ID FROM Passengers WHERE EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM PASSENGER_BIRTHDATE) > 90)
+AND BOOKING_DATE >= TO_DATE('2024-05-16', 'YYYY-MM-DD');
+
 ```
+
 4. In order to keep the database clean, once a day all tickets purchased for canceled flights are deleted from the system
 
 ```sql
@@ -151,7 +158,6 @@ WHERE Flight_ID IN (
 ```
 
 ### UPDATE Queries
-
 
 1. **Query 1**: Update the flight status for all flights departing from a specific airport on a given date.
 
@@ -177,9 +183,7 @@ WHERE a.AIRCRAFT_ID IN (
 );
 ```
 
-
 ![Update 2](./Images/update-2.png)
-
 
 3. **Query 3**: Updates the status of all flights whose Arrival_Time exceeded the current time to Landed
 
@@ -226,13 +230,16 @@ WHERE al.AIRLINE_NAME = :airline_name
 3. **Query 3**: Get the total number of bookings and the average passenger age for flights with a specific aircraft capacity range.
 
 ```sql
-SELECT f.FLIGHT_NUMBER, COUNT(b.BOOKING_ID) AS TOTAL_BOOKINGS, AVG(p.PASSENGER_AGE) AS AVG_PASSENGER_AGE
+SELECT f.FLIGHT_NUMBER,
+       COUNT(b.BOOKING_ID) AS TOTAL_BOOKINGS,
+       AVG(EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM p.PASSENGER_BIRTHDATE)) AS AVG_PASSENGER_AGE
 FROM Flights f
 JOIN Bookings b ON f.FLIGHT_ID = b.FLIGHT_ID
 JOIN Passengers p ON b.PASSENGER_ID = p.PASSENGER_ID
 JOIN Aircraft a ON f.AIRCRAFT_ID = a.AIRCRAFT_ID
 WHERE a.CAPACITY >= :min_capacity AND a.CAPACITY <= :max_capacity
-GROUP BY f.FLIGHT_NUMBER;
+GROUP BY f.FLIGHT_NUMBER
+
 ```
 
 4. **Query 4**: Retrieve the crew members' names and roles for flights operated by a specific airline and departing/arriving on a given date range.
@@ -240,11 +247,30 @@ GROUP BY f.FLIGHT_NUMBER;
 ```sql
 SELECT cm.CREW_NAME, cm.CREW_ROLE
 FROM CrewMembers cm
-JOIN Flights f ON cm.FLIGHT_ID = f.FLIGHT_ID
+JOIN WorkingCrew wc ON cm.CREW_ID = wc.CREW_ID
+JOIN Flights f ON wc.FLIGHT_ID = f.FLIGHT_ID
 JOIN Airlines al ON f.AIRLINE_ID = al.AIRLINE_ID
 WHERE al.AIRLINE_NAME = :airline_name
- AND f.DEPARTURE_TIME >= :start_date AND f.ARRIVAL_TIME <= :end_date;
+  AND f.DEPARTURE_TIME >= :start_date
+  AND f.ARRIVAL_TIME <= :end_date;
 ```
+
+### Queries with & parameters
+
+```sql
+INSERT INTO Flights (FLIGHT_ID, FLIGHT_NUMBER, DEPARTURE_TIME, ARRIVAL_TIME, DEPARTURE_AIRPORT, ARRIVAL_AIRPORT, FLIGHT_STATUS, AIRCRAFT_ID, AIRLINE_ID)
+VALUES (&FLIGHT_ID, '&FLIGHT_NUMBER', TO_DATE('&DEPARTURE_TIME', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE('&ARRIVAL_TIME', 'YYYY-MM-DD HH24:MI:SS'), &DEPARTURE_AIRPORT, &ARRIVAL_AIRPORT, '&FLIGHT_STATUS', &AIRCRAFT_ID, &AIRLINE_ID);
+```
+
+```sql
+SELECT *
+FROM Flights
+WHERE DEPARTURE_AIRPORT = (SELECT AIRPORT_ID FROM Airports WHERE AIRPORT_NAME = '&departure_airport')
+  AND TRUNC(DEPARTURE_TIME) = TO_DATE('&departure_date', 'YYYY-MM-DD');
+```
+
+![alt text](Images/image.png)
+![alt text](Images/image-1.png)
 
 ## Constraints
 
@@ -263,8 +289,17 @@ Add a CHECK constraint to the Passengers table to ensure that the passenger age 
 
 ```sql
 ALTER TABLE Passengers
-ADD CONSTRAINT CHK_PassengerAge CHECK (PASSENGER_AGE >= 18 AND PASSENGER_AGE <= 100);
+ADD CONSTRAINT CHK_PassengerAge
+CHECK (
+    (EXTRACT(YEAR FROM SYSDATE) - EXTRACT(YEAR FROM PASSENGER_BIRTHDATE)) -
+    CASE
+        WHEN TO_CHAR(SYSDATE, 'MMDD') < TO_CHAR(PASSENGER_BIRTHDATE, 'MMDD') THEN 1
+        ELSE 0
+    END
+    BETWEEN 18 AND 100
+);
 ```
+
 ### 3. DEFAULT Constraint
 
 Add a DEFAULT constraint to the BOOKING_DATE column in the Bookings table to set the current date as the default value if no value is provided.

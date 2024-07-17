@@ -1,5 +1,7 @@
 # Stage 3 Report
 
+> [NOTE!] the first part is the function and explaintion in text and the second part is the code and the screenshots output of the code.
+
 ## Code Requirements
 
 - 2 function
@@ -8,16 +10,20 @@
 
 ## Function
 
-1. `GET_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE`
-    - Input: `aircraft_type_id INT`
-    - Output: `junior_flight_attendants`
-    - Description: Returns all junior flight attendants that are qualified to work on an aircraft of a given type.
+### GET_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE
 
-> **Note:** 
+This function, GET_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE, is used to retrieve all junior flight attendants qualified to work on a specific type of aircraft. It takes the aircraft type as an input and returns a cursor containing the IDs of the junior flight attendants. This function is useful in scenarios where you need to identify and potentially promote junior flight attendants based on their qualifications for a specific aircraft type. For example, if an airline introduces a new aircraft model and wants to ensure that junior flight attendants qualified for the previous model are also qualified and promoted for the new one, this function can identify the relevant crew members.
+
+1. `GET_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE`
+   - Input: `aircraft_type_id INT`
+   - Output: `junior_flight_attendants`
+   - Description: Returns all junior flight attendants that are qualified to work on an aircraft of a given type.
+
+> **Note:**
 > The purpose of this function is:
+>
 > - To get all junior flight attendants that are qualified to work on an aircraft of a given type.
 > - To promote all junior flight attendants that are qualified to work on an aircraft of a given type to senior flight attendants.
-
 
 ```sql
 CREATE OR REPLACE FUNCTION GET_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE(aircraft_type IN VARCHAR2)
@@ -27,7 +33,8 @@ BEGIN
     OPEN crew_cursor FOR
     SELECT cm.CREW_ID
     FROM CrewMembers cm
-    JOIN Flights f ON cm.FLIGHT_ID = f.FLIGHT_ID
+    JOIN WorkingCrew wc ON cm.CREW_ID = wc.CREW_ID
+    JOIN Flights f ON wc.FLIGHT_ID = f.FLIGHT_ID
     JOIN Aircraft a ON f.AIRCRAFT_ID = a.AIRCRAFT_ID
     WHERE a.AIRCRAFT_TYPE = aircraft_type
     AND cm.CREW_ROLE = 'Junior Flight Attendant';
@@ -36,14 +43,18 @@ BEGIN
 END;
 ```
 
-2. `calculate_available_seats`
-    - Input: `flight_id INT`
-    - Output: `available_seats`
-    - Description: Returns the number of available seats on a given flight.
+### calculate_available_seats
 
+The calculate_available_seats function calculates the number of available seats on a given flight by subtracting the number of booked seats from the total capacity of the aircraft. It takes a flight ID as input and returns the number of available seats. This function is essential for managing flight bookings and ensuring that the flight status is updated based on seat availability. A typical use case is during the booking process, where the system needs to verify seat availability before confirming a booking. For instance, an airline can use this function to check available seats before allowing additional bookings or making decisions about overbooking policies.
+
+2. `calculate_available_seats`
+   - Input: `flight_id INT`
+   - Output: `available_seats`
+   - Description: Returns the number of available seats on a given flight.
 
 > **Note:**
 > The purpose of this function is:
+>
 > - To calculate the number of available seats on a given flight.
 > - To update the status of a given flight to a new status.
 
@@ -88,7 +99,7 @@ BEGIN
     -- Count booked seats using cursor
     SELECT COUNT(*)
     INTO v_booked_seats
-    FROM Bookings
+    FROM Booking
     WHERE flight_id = p_flight_id;
 
     -- Calculate available seats
@@ -114,12 +125,17 @@ END calculate_available_seats;
 
 ## Procedures
 
+### PROMOTE_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE
+
+The procedure PROMOTE_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE promotes all junior flight attendants qualified to work on a specific type of aircraft to senior flight attendants. It utilizes the function GET_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE to fetch the IDs of the qualified crew members and then updates their roles in the database. This procedure is particularly useful during organizational changes or crew promotions when there is a need to elevate the roles of qualified junior flight attendants systematically. For example, when an airline decides to promote all junior flight attendants who have completed a certain number of hours or flights on a particular aircraft type, this procedure can automate the promotion process.
+
 1. `PROMOTE_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE`
-    - Input: `aircraft_type_id INT`
-    - Description: Promotes all junior flight attendants that are qualified to work on an aircraft of a given type to senior flight attendants.
+   - Input: `aircraft_type_id INT`
+   - Description: Promotes all junior flight attendants that are qualified to work on an aircraft of a given type to senior flight attendants.
 
 > **Note:**
 > The purpose of this procedure is:
+>
 > - To promote all junior flight attendants that are qualified to work on an aircraft of a given type to senior flight attendants.
 > - To update the status of a given flight to a new status.
 
@@ -145,16 +161,25 @@ BEGIN
 EXCEPTION
     WHEN OTHERS THEN
         ROLLBACK;
+        IF crew_cursor%ISOPEN THEN
+            CLOSE crew_cursor;
+        END IF;
         RAISE;
 END;
 ```
 
+
+### update_flight_status
+
+The update_flight_status procedure updates the status of a given flight based on the current time compared to the flight's scheduled departure and arrival times. It determines whether the flight is scheduled, in flight, or arrived, and updates the flight status accordingly. This procedure is crucial for maintaining accurate and up-to-date flight information, which is essential for both operational efficiency and customer communication. A typical scenario is during regular system updates, where the airline's operations control center needs to refresh the status of all flights. For instance, as the current time progresses, this procedure ensures that flight statuses are updated from "Scheduled" to "In Flight" or "Arrived" as appropriate.
+
 2. `update_flight_status`
-    - Input: `flight_id INT, new_status VARCHAR`
-    - Description: Updates the status of a given flight to a new status.
+   - Input: `flight_id INT, new_status VARCHAR`
+   - Description: Updates the status of a given flight to a new status.
 
 > **Note:**
 > The purpose of this procedure is:
+>
 > - To update the status of a given flight to a new status.
 > - To calculate the number of available seats on a given flight.
 
@@ -168,7 +193,7 @@ IS
     -- Cursor for passenger information
     CURSOR c_passengers IS
         SELECT p.passenger_id, p.passenger_name, p.passenger_email
-        FROM Bookings b
+        FROM Booking b
         JOIN Passengers p ON b.passenger_id = p.passenger_id
         WHERE b.flight_id = p_flight_id;
 
@@ -222,7 +247,7 @@ END update_flight_status;
 ## Main Program
 
 1. `main_program_1`
-    - Description: Calls the `GET_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE` function with a given aircraft type ID and prints the results.
+   - Description: Calls the `GET_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE` function with a given aircraft type ID and prints the results.
 
 ```sql
 DECLARE
@@ -239,7 +264,7 @@ BEGIN
     IF crew_cursor%NOTFOUND THEN
         DBMS_OUTPUT.PUT_LINE('The program was successful');
     ELSE
-        DBMS_OUTPUT.PUT_LINE('ERROR there are crew member with the role "Junior Flight Attendant".');
+        DBMS_OUTPUT.PUT_LINE('ERROR: There are crew members with the role "Junior Flight Attendant".');
     END IF;
 
     CLOSE crew_cursor;
@@ -253,7 +278,7 @@ END;
 ```
 
 2. `main_program_2`
-    - Description: Calls the `calculate_available_seats` function with a given flight ID and prints the results.
+   - Description: Calls the `calculate_available_seats` function with a given flight ID and prints the results.
 
 ```sql
 DECLARE
@@ -285,7 +310,6 @@ END;
 
 ![alt text](Images/image.png)
 
-
 ### Output of the `PROMOTE_JUNIOR_FLIGHT_ATTENDANTS_BY_AIRCRAFT_TYPE` procedure
 
 ![alt text](Images/image-1.png)
@@ -293,3 +317,36 @@ END;
 ![alt text](Images/image-2.png)
 
 ![alt text](Images/image-3.png)
+
+
+### Before run main 1
+
+![alt text](image.png)
+
+### run1 result
+
+![alt text](image-1.png)
+
+### FUNCTION1
+
+![alt text](image-2.png)
+
+# PROCEDURE1
+
+![alt text](image-3.png)
+
+### Before run main 1
+
+![alt text](image-4.png)
+
+### run2 result
+
+![alt text](image-5.png)
+
+### FUNCTION2
+
+![alt text](image-6.png)
+
+# PROCEDURE2
+
+![alt text](image-7.png)
