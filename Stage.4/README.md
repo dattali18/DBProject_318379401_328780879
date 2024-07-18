@@ -290,6 +290,47 @@ CREATE TABLE TicketSeller (
 
 place-holder-for-image + explantion (create two views that are not already in the database) + declaration of the Views
 
+
+### מבט ראשון
+
+CREATE VIEW View_OriginalDepartment AS
+SELECT 
+    b.BOOKING_ID,
+    p.PASSENGER_NAME,
+    f.FLIGHT_NUMBER,
+    pr.PAYMENT_DATE,
+    pr.PAYMENT_ID
+FROM 
+    JOINEDBOOKING b
+JOIN 
+    JOINEDPASSENGERS p ON b.PASSENGER_ID = p.PASSENGER_ID
+JOIN 
+    FLIGHTS f ON b.FLIGHT_ID = f.FLIGHT_ID
+JOIN 
+    PAYMENT_REPORT pr ON b.BOOKING_ID = pr.BOOKING_ID;
+
+![alt text](image-5.png)
+
+### שאילתה 1 על המבט
+### הצגת כל ההזמנות ותאריכי התשלום
+
+SELECT BOOKING_ID, PASSENGER_NAME, FLIGHT_NUMBER, PAYMENT_DATE
+FROM View_OriginalDepartment;
+
+![alt text](image-6.png)
+
+
+### שאילתה 2 על המבט
+### מספר ההזמנות עבור כל טיסה
+
+SELECT FLIGHT_NUMBER, COUNT(BOOKING_ID) AS NumberOfBookings
+FROM View_OriginalDepartment
+GROUP BY FLIGHT_NUMBER;
+
+![alt text](image-8.png)
+
+
+
 ### 6. Creating two queries
 
 place-holder-for-image + explantion (create two queries on the views) + declaration of the queries + image-of-result
