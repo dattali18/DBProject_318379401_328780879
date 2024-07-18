@@ -292,7 +292,7 @@ place-holder-for-image + explantion (create two views that are not already in th
 
 
 ### מבט ראשון
-
+```sql
 CREATE VIEW View_OriginalDepartment AS
 SELECT 
     b.BOOKING_ID,
@@ -308,14 +308,17 @@ JOIN
     FLIGHTS f ON b.FLIGHT_ID = f.FLIGHT_ID
 JOIN 
     PAYMENT_REPORT pr ON b.BOOKING_ID = pr.BOOKING_ID;
+```
 
 ![alt text](image-5.png)
 
 ### שאילתה 1 על המבט
 ### הצגת כל ההזמנות ותאריכי התשלום
 
+```sql
 SELECT BOOKING_ID, PASSENGER_NAME, FLIGHT_NUMBER, PAYMENT_DATE
 FROM View_OriginalDepartment;
+```
 
 ![alt text](image-6.png)
 
@@ -323,9 +326,11 @@ FROM View_OriginalDepartment;
 ### שאילתה 2 על המבט
 ### מספר ההזמנות עבור כל טיסה
 
+```sql
 SELECT FLIGHT_NUMBER, COUNT(BOOKING_ID) AS NumberOfBookings
 FROM View_OriginalDepartment
 GROUP BY FLIGHT_NUMBER;
+```
 
 ![alt text](image-8.png)
 
@@ -334,4 +339,6 @@ GROUP BY FLIGHT_NUMBER;
 ### 6. Creating two queries
 
 place-holder-for-image + explantion (create two queries on the views) + declaration of the queries + image-of-result
+
+
 
