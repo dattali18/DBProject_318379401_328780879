@@ -326,9 +326,11 @@ GROUP BY
     f.FLIGHT_NUMBER;
 ```
 
+![alt text](image-9.png)
+
 ## 6. Querying the views
 
-### Query 1
+### Query 1 on view 1
 
 this query is used to get the booking id, passenger name, flight number and payment date from the view.
 usage: this query can be used to get the booking id, passenger name, flight number and payment date from the view.
@@ -341,7 +343,7 @@ FROM View_OriginalDepartment;
 ![alt text](image-6.png)
 
 
-### Query 2
+### Query 2 on view 1
 
 this query is used to get the flight number and the number of bookings for that flight.
 usage: this query can be used to get the flight number and the number of bookings for that flight.
@@ -353,3 +355,36 @@ GROUP BY FLIGHT_NUMBER;
 ```
 
 ![alt text](image-8.png)
+
+### Query 1 on view 2
+### return all fthe flights and the number of booking for each flight Sorted in descending order
+
+```sql
+SELECT 
+    FLIGHT_NUMBER, 
+    NumberOfBookings 
+FROM 
+    View_FlightBooking
+ORDER BY 
+    NumberOfBookings DESC;
+
+```
+
+![alt text](image-13.png)
+
+
+### Query 2 on view 2
+### reurn the number of booking for given flight
+
+```sql
+SELECT 
+    FLIGHT_NUMBER, 
+    NumberOfBookings 
+FROM 
+    View_FlightBooking
+WHERE 
+    FLIGHT_NUMBER = 'BC-58345061';
+```
+
+![alt text](image-12.png)
+
