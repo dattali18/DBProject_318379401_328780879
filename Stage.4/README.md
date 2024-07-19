@@ -156,6 +156,8 @@ joining both databases into one database.
 
 ### The new database
 
+![alt text](image-9.jpg)
+
 ### Create Table Statements
 
 #### JoinedPassengers
@@ -282,16 +284,13 @@ CREATE TABLE TicketSeller (
 );
 ```
 
-#### Diagrams
-
 
 
 ### 5. Creating two views
 
-place-holder-for-image + explantion (create two views that are not already in the database) + declaration of the Views
 
+### View 1
 
-### מבט ראשון
 ```sql
 CREATE VIEW View_OriginalDepartment AS
 SELECT 
@@ -312,8 +311,27 @@ JOIN
 
 ![alt text](image-5.png)
 
-### שאילתה 1 על המבט
-### הצגת כל ההזמנות ותאריכי התשלום
+### View 2
+
+```sql
+CREATE VIEW View_FlightBooking AS
+SELECT 
+    f.FLIGHT_NUMBER,
+    COUNT(b.BOOKING_ID) AS NumberOfBookings
+FROM
+    JOINEDBOOKING b
+JOIN
+    FLIGHTS f ON b.FLIGHT_ID = f.FLIGHT_ID
+GROUP BY
+    f.FLIGHT_NUMBER;
+```
+
+## 6. Querying the views
+
+### Query 1
+
+this query is used to get the booking id, passenger name, flight number and payment date from the view.
+usage: this query can be used to get the booking id, passenger name, flight number and payment date from the view.
 
 ```sql
 SELECT BOOKING_ID, PASSENGER_NAME, FLIGHT_NUMBER, PAYMENT_DATE
@@ -323,8 +341,10 @@ FROM View_OriginalDepartment;
 ![alt text](image-6.png)
 
 
-### שאילתה 2 על המבט
-### מספר ההזמנות עבור כל טיסה
+### Query 2
+
+this query is used to get the flight number and the number of bookings for that flight.
+usage: this query can be used to get the flight number and the number of bookings for that flight.
 
 ```sql
 SELECT FLIGHT_NUMBER, COUNT(BOOKING_ID) AS NumberOfBookings
@@ -333,12 +353,3 @@ GROUP BY FLIGHT_NUMBER;
 ```
 
 ![alt text](image-8.png)
-
-
-
-### 6. Creating two queries
-
-place-holder-for-image + explantion (create two queries on the views) + declaration of the queries + image-of-result
-
-
-
