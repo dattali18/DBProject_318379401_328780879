@@ -23,27 +23,28 @@ and we extracted the file using PL\SQL Developer.
 
 ### 2. Reverse engineering the backup file
 
-after looking at the create statement from the backup file we can see the in their database they have the following tables:
+after looking at the create statement from the backup file we can see thet in their database they have the following tables:
 
 ```sql
 CREATE TABLE TICKET
 (
-  ticket_id    NUMBER(38) NOT NULL,
+  ticket_id    NUMBER(38) PRIMARY KEY,
   ticket_type  VARCHAR2(255) DEFAULT 'Regular' NOT NULL,
   ticket_price FLOAT NOT NULL
 );
 
 CREATE TABLE BAGGAGE
 (
-  baggage_id     NUMBER(38) NOT NULL,
+  baggage_id     NUMBER(38) PRIMARY KEY,
   baggage_type   VARCHAR2(255) NOT NULL,
   baggage_weight FLOAT NOT NULL,
-  ticket_id      NUMBER(38) NOT NULL
+  ticket_id      NUMBER(38) NOT NULL,
+  FOREIGN KEY (TICKET_ID) REFERENCES TICKET(TICKET_ID)
 );
 
 CREATE TABLE PASSENGER
 (
-  passenger_id    NUMBER(38) NOT NULL,
+  passenger_id    NUMBER(38) PRIMARY KEY,
   passenger_name  VARCHAR2(255) NOT NULL,
   passenger_phone VARCHAR2(15) NOT NULL,
   passenger_email VARCHAR2(255) NOT NULL
@@ -51,24 +52,27 @@ CREATE TABLE PASSENGER
 
 CREATE TABLE TICKETSELLER
 (
-  seller_id      NUMBER(38) NOT NULL,
+  seller_id      NUMBER(38) PRIMARY KEY,
   seller_name    VARCHAR2(255) NOT NULL,
   seller_contact VARCHAR2(255) NOT NULL
 );
 
 CREATE TABLE BOOKING
 (
-  booking_id   NUMBER(38) DEFAULT '-1' NOT NULL,
+  booking_id   NUMBER(38) DEFAULT '-1' PRIMARY KEY,
   journey_id   NUMBER(38) NOT NULL,
   booking_date DATE NOT NULL,
   passenger_id NUMBER(38) NOT NULL,
   seller_id    NUMBER(38) NOT NULL,
-  ticket_id    NUMBER(38) NOT NULL
+  ticket_id    NUMBER(38) NOT NULL,
+  FOREIGN KEY (PASSENGER_ID) REFERENCES PASSENGER(PASSENGER_ID),
+    FOREIGN KEY (SELLER_ID) REFERENCES TICKETSELLER(SELLER_ID),
+    FOREIGN KEY (TICKET_ID) REFERENCES TICKET(TICKET_ID)
 );
 
 CREATE TABLE PAYMENT_REPORT
 (
-  payment_id   NUMBER(38) NOT NULL,
+  payment_id   NUMBER(38) PRIMARY KEY,
   payment_date DATE NOT NULL,
   booking_id   NUMBER(38) NOT NULL
 );
