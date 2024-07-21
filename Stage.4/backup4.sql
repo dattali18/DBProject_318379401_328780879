@@ -3,6 +3,479 @@ prompt Created by Nabet on יום ראשון 21 יולי 2024
 set feedback off
 set define off
 
+prompt Creating AIRCRAFT...
+create table AIRCRAFT
+(
+  aircraft_id   INTEGER not null,
+  aircraft_type VARCHAR2(200) not null,
+  capacity      INTEGER not null
+)
+tablespace SYSTEM
+  pctfree 10
+  pctused 40
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table AIRCRAFT
+  add primary key (AIRCRAFT_ID)
+  using index 
+  tablespace SYSTEM
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
+prompt Creating AIRLINES...
+create table AIRLINES
+(
+  airline_id     INTEGER not null,
+  airline_name   VARCHAR2(200) not null,
+  origin_country VARCHAR2(200) not null
+)
+tablespace SYSTEM
+  pctfree 10
+  pctused 40
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table AIRLINES
+  add primary key (AIRLINE_ID)
+  using index 
+  tablespace SYSTEM
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
+prompt Creating AIRPORTS...
+create table AIRPORTS
+(
+  airport_id   INTEGER not null,
+  airport_name VARCHAR2(200) not null,
+  location     VARCHAR2(200) not null
+)
+tablespace SYSTEM
+  pctfree 10
+  pctused 40
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table AIRPORTS
+  add primary key (AIRPORT_ID)
+  using index 
+  tablespace SYSTEM
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
+prompt Creating TICKET...
+create table TICKET
+(
+  ticket_id    NUMBER(38) not null,
+  ticket_type  VARCHAR2(255) default 'Regular' not null,
+  ticket_price FLOAT not null
+)
+tablespace SYSTEM
+  pctfree 10
+  pctused 40
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table TICKET
+  add primary key (TICKET_ID)
+  using index 
+  tablespace SYSTEM
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table TICKET
+  add constraint CHK_TICKET_PRICE_POSITIVE
+  check (Ticket_price > 0);
+
+prompt Creating BAGGAGE...
+create table BAGGAGE
+(
+  baggage_id     NUMBER(38) not null,
+  baggage_type   VARCHAR2(255) not null,
+  baggage_weight FLOAT not null,
+  ticket_id      NUMBER(38) not null
+)
+tablespace SYSTEM
+  pctfree 10
+  pctused 40
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table BAGGAGE
+  add primary key (BAGGAGE_ID)
+  using index 
+  tablespace SYSTEM
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table BAGGAGE
+  add foreign key (TICKET_ID)
+  references TICKET (TICKET_ID);
+alter table BAGGAGE
+  add constraint CHECK_BAGGAGE_WEIGHT
+  check (Baggage_weight >= 0);
+
+prompt Creating CREWMEMBERS...
+create table CREWMEMBERS
+(
+  crew_id   INTEGER not null,
+  crew_name VARCHAR2(200) not null,
+  crew_role VARCHAR2(200) not null
+)
+tablespace SYSTEM
+  pctfree 10
+  pctused 40
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table CREWMEMBERS
+  add primary key (CREW_ID)
+  using index 
+  tablespace SYSTEM
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
+prompt Creating FLIGHTS...
+create table FLIGHTS
+(
+  flight_id         INTEGER not null,
+  flight_number     VARCHAR2(100) not null,
+  departure_time    DATE not null,
+  arrival_time      DATE not null,
+  flight_status     VARCHAR2(200) not null,
+  airline_id        INTEGER not null,
+  aircraft_id       INTEGER not null,
+  arrival_airport   INTEGER not null,
+  departure_airport INTEGER not null
+)
+tablespace SYSTEM
+  pctfree 10
+  pctused 40
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table FLIGHTS
+  add primary key (FLIGHT_ID)
+  using index 
+  tablespace SYSTEM
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table FLIGHTS
+  add foreign key (DEPARTURE_AIRPORT)
+  references AIRPORTS (AIRPORT_ID);
+alter table FLIGHTS
+  add foreign key (AIRLINE_ID)
+  references AIRLINES (AIRLINE_ID);
+alter table FLIGHTS
+  add foreign key (AIRCRAFT_ID)
+  references AIRCRAFT (AIRCRAFT_ID);
+alter table FLIGHTS
+  add foreign key (ARRIVAL_AIRPORT)
+  references AIRPORTS (AIRPORT_ID);
+
+prompt Creating JOINEDPASSENGERS...
+create table JOINEDPASSENGERS
+(
+  passenger_id        NUMBER not null,
+  passenger_name      VARCHAR2(100),
+  passenger_phone     VARCHAR2(20),
+  passenger_email     VARCHAR2(100),
+  passport_number     VARCHAR2(20),
+  passenger_birthdate DATE
+)
+tablespace SYSTEM
+  pctfree 10
+  pctused 40
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table JOINEDPASSENGERS
+  add primary key (PASSENGER_ID)
+  using index 
+  tablespace SYSTEM
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
+prompt Creating TICKETSELLER...
+create table TICKETSELLER
+(
+  seller_id      NUMBER(38) not null,
+  seller_name    VARCHAR2(255) not null,
+  seller_contact VARCHAR2(255) not null
+)
+tablespace SYSTEM
+  pctfree 10
+  pctused 40
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table TICKETSELLER
+  add primary key (SELLER_ID)
+  using index 
+  tablespace SYSTEM
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table TICKETSELLER
+  add constraint CHECK_SELLER_CONTACT
+  check (LENGTH(Seller_contact) <= 20);
+
+prompt Creating JOINEDBOOKING...
+create table JOINEDBOOKING
+(
+  booking_id   NUMBER not null,
+  passenger_id NUMBER,
+  flight_id    NUMBER,
+  seat_number  VARCHAR2(10),
+  booking_date DATE,
+  journey_id   NUMBER,
+  seller_id    NUMBER,
+  ticket_id    NUMBER
+)
+tablespace SYSTEM
+  pctfree 10
+  pctused 40
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table JOINEDBOOKING
+  add primary key (BOOKING_ID)
+  using index 
+  tablespace SYSTEM
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table JOINEDBOOKING
+  add constraint FK_FLIGHT foreign key (FLIGHT_ID)
+  references FLIGHTS (FLIGHT_ID);
+alter table JOINEDBOOKING
+  add constraint FK_PASSENGER foreign key (PASSENGER_ID)
+  references JOINEDPASSENGERS (PASSENGER_ID);
+alter table JOINEDBOOKING
+  add constraint FK_SELLER foreign key (SELLER_ID)
+  references TICKETSELLER (SELLER_ID);
+alter table JOINEDBOOKING
+  add constraint FK_TICKET foreign key (TICKET_ID)
+  references TICKET (TICKET_ID);
+
+prompt Creating PAYMENT_REPORT...
+create table PAYMENT_REPORT
+(
+  payment_id   NUMBER(38) not null,
+  payment_date DATE not null,
+  booking_id   NUMBER(38) not null
+)
+tablespace SYSTEM
+  pctfree 10
+  pctused 40
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table PAYMENT_REPORT
+  add primary key (PAYMENT_ID)
+  using index 
+  tablespace SYSTEM
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table PAYMENT_REPORT
+  add constraint BOOKING_ID foreign key (BOOKING_ID)
+  references JOINEDBOOKING (BOOKING_ID);
+alter table PAYMENT_REPORT
+  add foreign key (BOOKING_ID)
+  references BOOKING (BOOKING_ID);
+alter table PAYMENT_REPORT
+  add constraint CHK_P_POSITIVE
+  check (Payment_id > 0);
+
+prompt Creating WORKINGCREW...
+create table WORKINGCREW
+(
+  flight_id INTEGER not null,
+  crew_id   INTEGER not null
+)
+tablespace SYSTEM
+  pctfree 10
+  pctused 40
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table WORKINGCREW
+  add primary key (FLIGHT_ID, CREW_ID)
+  using index 
+  tablespace SYSTEM
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+alter table WORKINGCREW
+  add foreign key (FLIGHT_ID)
+  references FLIGHTS (FLIGHT_ID);
+alter table WORKINGCREW
+  add foreign key (CREW_ID)
+  references CREWMEMBERS (CREW_ID);
+
 prompt Disabling triggers for AIRCRAFT...
 alter table AIRCRAFT disable all triggers;
 prompt Disabling triggers for AIRLINES...
@@ -13,26 +486,22 @@ prompt Disabling triggers for TICKET...
 alter table TICKET disable all triggers;
 prompt Disabling triggers for BAGGAGE...
 alter table BAGGAGE disable all triggers;
-prompt Disabling triggers for TICKETSELLER...
-alter table TICKETSELLER disable all triggers;
-prompt Disabling triggers for BOOKING...
-alter table BOOKING disable all triggers;
 prompt Disabling triggers for CREWMEMBERS...
 alter table CREWMEMBERS disable all triggers;
 prompt Disabling triggers for FLIGHTS...
 alter table FLIGHTS disable all triggers;
 prompt Disabling triggers for JOINEDPASSENGERS...
 alter table JOINEDPASSENGERS disable all triggers;
+prompt Disabling triggers for TICKETSELLER...
+alter table TICKETSELLER disable all triggers;
 prompt Disabling triggers for JOINEDBOOKING...
 alter table JOINEDBOOKING disable all triggers;
+prompt Disabling triggers for PAYMENT_REPORT...
+alter table PAYMENT_REPORT disable all triggers;
 prompt Disabling triggers for WORKINGCREW...
 alter table WORKINGCREW disable all triggers;
 prompt Disabling foreign key constraints for BAGGAGE...
 alter table BAGGAGE disable constraint SYS_C008429;
-prompt Disabling foreign key constraints for BOOKING...
-alter table BOOKING disable constraint SYS_C008449;
-alter table BOOKING disable constraint SYS_C008450;
-alter table BOOKING disable constraint SYS_C008451;
 prompt Disabling foreign key constraints for FLIGHTS...
 alter table FLIGHTS disable constraint SYS_C008402;
 alter table FLIGHTS disable constraint SYS_C008403;
@@ -43,14 +512,23 @@ alter table JOINEDBOOKING disable constraint FK_FLIGHT;
 alter table JOINEDBOOKING disable constraint FK_PASSENGER;
 alter table JOINEDBOOKING disable constraint FK_SELLER;
 alter table JOINEDBOOKING disable constraint FK_TICKET;
+prompt Disabling foreign key constraints for PAYMENT_REPORT...
+alter table PAYMENT_REPORT disable constraint BOOKING_ID;
+alter table PAYMENT_REPORT disable constraint SYS_C008457;
 prompt Disabling foreign key constraints for WORKINGCREW...
 alter table WORKINGCREW disable constraint SYS_C008417;
 alter table WORKINGCREW disable constraint SYS_C008418;
 prompt Deleting WORKINGCREW...
 delete from WORKINGCREW;
 commit;
+prompt Deleting PAYMENT_REPORT...
+delete from PAYMENT_REPORT;
+commit;
 prompt Deleting JOINEDBOOKING...
 delete from JOINEDBOOKING;
+commit;
+prompt Deleting TICKETSELLER...
+delete from TICKETSELLER;
 commit;
 prompt Deleting JOINEDPASSENGERS...
 delete from JOINEDPASSENGERS;
@@ -60,12 +538,6 @@ delete from FLIGHTS;
 commit;
 prompt Deleting CREWMEMBERS...
 delete from CREWMEMBERS;
-commit;
-prompt Deleting BOOKING...
-delete from BOOKING;
-commit;
-prompt Deleting TICKETSELLER...
-delete from TICKETSELLER;
 commit;
 prompt Deleting BAGGAGE...
 delete from BAGGAGE;
@@ -5291,1596 +5763,6 @@ insert into BAGGAGE (baggage_id, baggage_type, baggage_weight, ticket_id)
 values (-1, 'Carry-On', 10.5, 377698);
 commit;
 prompt 566 records loaded
-prompt Loading TICKETSELLER...
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (234413401, 'McDormand', '502995216');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (214945813, 'Raybon', '504217977');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (332113182, 'Viterelli', '517881279');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (207083715, 'Basinger', '9999999999');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (386178461, 'Moraz', '562206985');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (217056502, 'Blackmore', '534063610');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (281154307, 'Brody', '511433950');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (320345744, 'Badalucco', '504635700');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (325389215, 'Cazale', '583308100');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (210470680, 'Delta', '561836422');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (335673295, 'Eckhart', '572775384');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310266508, 'Atlas', '511892567');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (335012305, 'Berkeley', '507634336');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (272173133, 'Sewell', '506078218');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (355616367, 'Wiest', '588359326');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (363641567, 'Niven', '503288460');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (341750599, 'Ledger', '513311518');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (274810074, 'Tobolowsky', '518422580');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (227710098, 'Greenwood', '543103456');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (362506458, 'Carrere', '576060388');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (209218853, 'Lorenz', '583322531');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (374271549, 'O''Sullivan', '558846936');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (381386109, 'Holden', '566273793');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (380347031, 'Parm', '521885702');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (287359609, 'Palmieri', '587998168');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (277303119, 'Warden', '553903154');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (288367846, 'Williams', '589683539');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (316073442, 'Colon', '543613671');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (202318062, 'Coburn', '500838054');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (296490615, 'Sayer', '571207901');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (363888243, 'Griggs', '508362643');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (271851580, 'Hatosy', '520834931');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (378494685, 'Assante', '569067896');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (217461665, 'Llewelyn', '555974010');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (385006976, 'Furtado', '586354305');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (288385654, 'Hanks', '576320092');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (381994314, 'Maxwell', '562839311');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (220647788, 'Pony', '547864120');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (318996086, 'Gosdin', '522794688');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (378745713, 'Nicks', '587858717');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (382190490, 'Utada', '579478486');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (357450766, 'Faithfull', '518947833');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (382262708, 'Statham', '565932088');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (329333824, 'Doucette', '542529963');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (295623764, 'Lewis', '501689907');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (258157080, 'Mitchell', '526043625');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (237777658, 'Matthau', '525241792');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (304082692, 'Young', '502936096');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (343952758, 'Swinton', '541121435');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (226444135, 'Channing', '543226789');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (326478636, 'Chappelle', '564292914');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (295480431, 'Faithfull', '507430150');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (345176686, 'Bandy', '551196931');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (362822032, 'Cara', '532784627');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (205616776, 'Affleck', '569523402');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (313515270, 'Jovovich', '568868985');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (234848134, 'Ellis', '585622740');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (296854630, 'Head', '525400175');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (214515321, 'Quinlan', '582579532');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (211133927, 'Jackman', '508922969');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (371494810, 'Diehl', '521474230');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (255503675, 'Ferry', '502845676');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (295709145, 'Moffat', '576376078');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (372307406, 'Def', '557473577');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (227969024, 'McElhone', '548268675');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (252439705, 'Chung', '528967081');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (296933887, 'Coe', '577533448');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (356297958, 'Khan', '519130098');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (387943673, 'Marie', '566930700');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310663510, 'Warren', '517240812');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (236933452, 'Neville', '540348025');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (239220981, 'Capshaw', '551396760');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (274273432, 'Evett', '525056572');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (308281893, 'Bloch', '575684041');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (205554610, 'Avalon', '569951953');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (321495574, 'Baranski', '501521480');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (233439957, 'Palmer', '587383558');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (364781468, 'Flanery', '552399728');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (376097465, 'Swayze', '584818629');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (237277522, 'Stormare', '531557512');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (307799804, 'Crosby', '512870607');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (262644266, 'Hersh', '577537691');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (325390520, 'Badalucco', '511270153');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (259468455, 'Peet', '563669232');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (234853838, 'Tinsley', '512296629');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (246648879, 'Warden', '549952920');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (324559120, 'Broderick', '505142978');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (231394919, 'Dalton', '510213314');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (320256878, 'Klein', '572782577');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (270700908, 'Gibson', '589342427');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (280955985, 'Craven', '538268007');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (343751129, 'Macy', '575626551');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (218786324, 'Danger', '568143628');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (319536448, 'Branagh', '537141847');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (229222618, 'Jackman', '509921404');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (232899139, 'Sandler', '579651555');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (304988522, 'Charles', '526477679');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (300142382, 'Prowse', '571963061');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (236950311, 'Bancroft', '535902351');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (334120188, 'Visnjic', '513931615');
-commit;
-prompt 100 records committed...
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (292721604, 'Ruiz', '538896434');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (325237214, 'Caviezel', '527854086');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (297909520, 'Alexander', '550394009');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (350910955, 'Todd', '516505934');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (260313579, 'Clayton', '535805300');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (358656201, 'Zevon', '566162475');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (263316337, 'Wagner', '538263933');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (388918507, 'Ponty', '541236502');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (355554389, 'Burton', '539638382');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (329984528, 'Moody', '564283489');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (289104838, 'Gough', '577960194');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (280607651, 'Aiken', '561697874');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (252240713, 'Berkley', '585454790');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (353282291, 'Li', '557074279');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (234674022, 'Hopper', '527659443');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (274254467, 'Kretschmann', '551561079');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (237492254, 'Perez', '513302533');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (352245013, 'Green', '539215338');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (296078129, 'Coolidge', '559823195');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (228359755, 'Benoit', '586002921');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (346558251, 'De Almeida', '578756244');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (341643467, 'Conley', '569300466');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (264129045, 'McLachlan', '531818545');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (200076168, 'McNarland', '531171922');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (279332987, 'Fariq', '520534965');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (382386541, 'Adkins', '518936501');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (355379591, 'Yankovic', '522759611');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (233742748, 'Posener', '521242154');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (220299024, 'McBride', '506606288');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (225050898, 'Finney', '542634069');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (341456397, 'Orbit', '569225908');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (243120652, 'Wen', '565086216');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (261116928, 'Phillips', '562683048');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (224221194, 'Snow', '576770592');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (209711155, 'Stuermer', '535013939');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (358423787, 'Eastwood', '527098592');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (352580218, 'Womack', '509518858');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (213484577, 'Turner', '528406819');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (315658972, 'Hirsch', '532578236');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (256738120, 'O''Connor', '579200664');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (290154315, 'Cobbs', '567908726');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (298423242, 'Wopat', '587238122');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (365172580, 'Gatlin', '536318100');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (221923419, 'Humphrey', '533558597');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (234818209, 'Carnes', '562800982');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (352448787, 'Ellis', '576461799');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (221901164, 'Skaggs', '550366301');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (267591151, 'Hedaya', '538045388');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (228427626, 'Duncan', '540426802');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (367822102, 'Rossellini', '520841657');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (262882544, 'Cervine', '556035975');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (354252310, 'Vaughn', '508978282');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (250318415, 'Whitwam', '504853553');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (251702571, 'Purefoy', '582751099');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (382817463, 'Sinise', '566581976');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (219228918, 'Rollins', '558162844');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (319368928, 'Imbruglia', '512868214');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (364570311, 'Mazar', '519475977');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (214974740, 'Fishburne', '509432932');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (235422949, 'Weaver', '553774918');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (383240133, 'Roy Parnell', '588597127');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (345865205, 'Taylor', '547558474');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (334196039, 'Tate', '578550260');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (202536414, 'Flanery', '577111721');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (354012211, 'Bale', '571768324');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (279186496, 'Soda', '572463231');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (264968973, 'Bragg', '562070364');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (241836382, 'Forster', '549743338');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (316936386, 'Rains', '576022687');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (316896662, 'Chaplin', '524347004');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (375037348, 'Tankard', '542886314');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (223058663, 'Giannini', '568095849');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (226520741, 'Vincent', '506180186');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (251473344, 'Macht', '513213088');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (342517245, 'Bello', '532325209');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (279543919, 'Levert', '534997348');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (351668768, 'Banderas', '525867436');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (378453080, 'Hoffman', '529231743');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (231987717, 'Whitford', '579577495');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (265199943, 'Quaid', '580218107');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (359089400, 'Pollack', '519412843');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (293310565, 'Shaye', '516507902');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (382524856, 'Diddley', '582034494');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (234383859, 'McKean', '544536126');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (291697284, 'Patillo', '574415572');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (292117233, 'Farris', '501077381');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (348147944, 'Hudson', '574190379');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (273298003, 'Gallant', '514359327');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (286222029, 'Henstridge', '573894597');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (213322864, 'Basinger', '566412863');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (218646495, 'Foley', '585264857');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (338993209, 'Rush', '546435635');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (291745197, 'Osbourne', '519424073');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (295504003, 'Keener', '582220896');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (286256884, 'Popper', '528202799');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (239573283, 'Ford', '534682203');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (338383773, 'Salonga', '529161294');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (313422914, 'Caldwell', '514811152');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (201157338, 'Sledge', '515207082');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (316694395, 'White', '563665026');
-commit;
-prompt 200 records committed...
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (242838870, 'Summer', '557173475');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (332240843, 'Jane', '549819212');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (326250050, 'Kilmer', '577460875');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (208953132, 'Frakes', '585760195');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (345028424, 'Flanagan', '532969607');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (387229316, 'Cash', '550564102');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (259199134, 'Nicks', '589195632');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (342256992, 'Wheel', '531528043');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (357522613, 'Kirshner', '562643655');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (243823245, 'Mohr', '557821858');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (367193204, 'Moffat', '588761042');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (200771028, 'Graham', '545331433');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (297000767, 'Houston', '585535315');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (250359573, 'Garner', '549296350');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (257401303, 'Cherry', '541853174');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (209534435, 'Nicholson', '520729432');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (294448518, 'Spector', '522814613');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (353345218, 'Melvin', '579568621');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (313590950, 'Loggia', '504557084');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (237340794, 'McGriff', '562677631');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (308313920, 'Paquin', '536896582');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (282598062, 'Gooding', '553805996');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (316877033, 'Silverman', '546360118');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (315975743, 'Sheen', '516066348');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (242341315, 'Colin Young', '503092253');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (351104744, 'Vince', '531012202');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (236070328, 'El-Saher', '535792169');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (289405820, 'Thomas', '502627985');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (257301681, 'Darren', '517402244');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (271938993, 'Simpson', '585099757');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (340594367, 'Ricci', '543849143');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (284012229, 'Wolf', '560744758');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (353338208, 'Horizon', '506859160');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (282084259, 'Balk', '534565873');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (306439412, 'Teng', '572855871');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (328463277, 'Culkin', '565188084');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (247145869, 'Tomei', '541325086');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (360504390, 'Farrell', '504053125');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (263122301, 'Carlton', '500924728');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (349319230, 'Satriani', '546320847');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (235703717, 'Campbell', '588150391');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (215306111, 'Lunch', '513576136');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (317120894, 'Reilly', '524666208');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (295963344, 'Raye', '560793814');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (365778672, 'Bale', '543600125');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (292337047, 'Furay', '553695525');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (264751878, 'Tucci', '515307690');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (385952818, 'Latifah', '548267429');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (215919530, 'Kretschmann', '587454243');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (305063038, 'Steiger', '557420375');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (304960689, 'Webb', '505876673');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (369383417, 'Abraham', '541190265');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (315159983, 'Macht', '579687891');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (383068508, 'Caviezel', '512120463');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (379992281, 'McDonnell', '589604705');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (368361520, 'Archer', '537165348');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (380149339, 'De Almeida', '570638045');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (294023629, 'Connelly', '527229512');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (379411520, 'Solido', '512208262');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (385177335, 'Malone', '535935638');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (239929754, 'Sizemore', '558562705');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (221462028, 'Hanley', '516020695');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (260441923, 'Sherman', '523202845');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (370273040, 'Webb', '545519889');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (245078686, 'Stevenson', '530998935');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (358212799, 'McKellen', '522235670');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (325091518, 'Lizzy', '573906509');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (318599595, 'Ponce', '564530152');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (285435332, 'Chapman', '588825968');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (232830547, 'Driver', '584848373');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (232034549, 'Hector', '552289113');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (290455974, 'Harnes', '570202178');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (388129809, 'Paige', '524439644');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (253867252, 'Ronstadt', '586744822');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (308717810, 'Kahn', '577323514');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (300404573, 'Tyler', '564169946');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (215133805, 'Kapanka', '587944434');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (214329655, 'Aykroyd', '555600202');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (226660320, 'Witt', '577994966');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (255356533, 'Hingle', '570515595');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (337051483, 'Brody', '517769272');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (376165958, 'Pressly', '557734449');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (220415119, 'Chapman', '564624975');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (360420742, 'Avalon', '503125988');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (227369348, 'Balk', '504613493');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (352125561, 'Redgrave', '518227605');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (388161917, 'Colon', '502665850');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (368610255, 'Moriarty', '561887176');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (318883867, 'Santa Rosa', '580129074');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (359835609, 'Alston', '503076196');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (309399354, 'Sorvino', '521622221');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (277999888, 'Hagerty', '589747986');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (311525561, 'Jeffreys', '524245461');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (350438065, 'Garfunkel', '581671869');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (312705624, 'Janney', '504255737');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (377428731, 'Farris', '535184021');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (218298341, 'Diesel', '517543237');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (351631101, 'Domino', '580383536');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (264036200, 'Hatosy', '553729244');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (299341333, 'Morse', '587093284');
-commit;
-prompt 300 records committed...
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (233552819, 'Cotton', '537582848');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000000, 'Harroll', '406-630-9267');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000001, 'Aronin', '864-698-0298');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000002, 'Steart', '506-436-1165');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000003, 'Coombe', '375-674-7228');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000004, 'Pechard', '764-189-9195');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000005, 'Klaus', '243-280-8377');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000006, 'Shimuk', '543-105-5266');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000007, 'Gillease', '718-946-6544');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000008, 'Shovell', '412-230-7757');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000009, 'Eyckelberg', '864-574-6537');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000010, 'Ayrton', '546-996-6928');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000011, 'Merrett', '764-592-5544');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000012, 'Simenet', '647-972-1985');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000013, 'Caldayrou', '655-262-1684');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000014, 'Merrien', '441-196-2975');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000015, 'Withull', '486-438-5296');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000016, 'Cuming', '347-327-7630');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000017, 'Boyen', '575-652-9196');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000018, 'Humphries', '560-459-3050');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000019, 'Croote', '611-717-2067');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000020, 'Keir', '467-321-4580');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000021, 'Adger', '972-454-4639');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000022, 'Kuhlen', '836-864-4021');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000023, 'Matthewman', '771-621-5830');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000024, 'Linkleter', '961-437-7195');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000025, 'Healy', '146-814-6482');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000026, 'Fearick', '467-455-9626');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000027, 'Schindler', '800-886-5931');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000028, 'Masurel', '590-698-8996');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000029, 'Gouldeby', '992-311-0329');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000030, 'Humpatch', '128-334-0805');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000031, 'Thorold', '716-520-9281');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000032, 'Kobierski', '542-467-5556');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000033, 'Molder', '955-408-7114');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000034, 'Nelle', '163-508-0928');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000035, 'Lafuente', '678-505-7660');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000036, 'Withey', '950-138-5509');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000037, 'Birrane', '635-118-9645');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000038, 'Cadwell', '303-543-6179');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000039, 'Aguilar', '803-503-7682');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000040, 'Larkin', '576-855-3144');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000041, 'Houndsom', '254-193-8124');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000042, 'Laba', '324-585-7375');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000043, 'De la Harpe', '934-411-5610');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000044, 'Nowak', '789-597-0425');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000045, 'Van Castele', '203-340-6676');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000046, 'Luckin', '341-175-1947');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000047, 'Masi', '364-550-9120');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000048, 'Ludwell', '662-772-8615');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000049, 'Eyles', '975-557-2885');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000050, 'Banck', '159-449-2337');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000051, 'Bannon', '436-291-9494');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000052, 'Sidwell', '562-311-8258');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000053, 'Taree', '182-438-5587');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000054, 'Patroni', '391-732-2749');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000055, 'Leele', '495-181-4795');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000056, 'Shiliton', '562-294-1343');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000057, 'Flucks', '634-917-7526');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000058, 'Blackborn', '623-400-3758');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000059, 'Litster', '639-418-1472');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000060, 'Hatt', '214-145-3882');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000061, 'Sorrell', '212-283-6524');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000062, 'Gartsyde', '285-239-5952');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000063, 'Freebury', '196-558-7755');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000064, 'Hunnicutt', '820-172-4966');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000065, 'Sheavills', '187-612-0291');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000066, 'Feragh', '614-648-9214');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000067, 'Eager', '430-116-3100');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000068, 'Haggish', '213-479-0026');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000069, 'Armitage', '320-272-5537');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000070, 'Whorall', '574-797-0022');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000071, 'Grewer', '212-880-4357');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000072, 'Manston', '168-395-3533');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000073, 'Harnetty', '582-599-9058');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000074, 'Ringer', '199-226-9217');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000075, 'Exposito', '929-788-9735');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000076, 'Goulborn', '534-197-4045');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000077, 'Turfes', '815-661-7297');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000078, 'Maharry', '376-447-4690');
-insert into TICKETSELLER (seller_id, seller_name, seller_contact)
-values (310000079, 'Spirritt', '394-463-6734');
-commit;
-prompt 381 records loaded
-prompt Loading BOOKING...
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1101, 1101, to_date('11-06-2023', 'dd-mm-yyyy'), 3554560914, 325237214, 256940);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1102, 1102, to_date('30-05-2023', 'dd-mm-yyyy'), 1241083848, 297909520, 258498);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1000, 1000, to_date('08-06-2023', 'dd-mm-yyyy'), 1573871528, 234413401, 200137);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1001, 1001, to_date('24-06-2023', 'dd-mm-yyyy'), 4139544263, 214945813, 200361);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1002, 1002, to_date('27-06-2023', 'dd-mm-yyyy'), 379982361, 332113182, 200561);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1003, 1003, to_date('06-06-2023', 'dd-mm-yyyy'), 334694516, 207083715, 200579);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1004, 1004, to_date('18-06-2023', 'dd-mm-yyyy'), 342850352, 386178461, 201113);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1005, 1005, to_date('08-06-2023', 'dd-mm-yyyy'), 211756555, 217056502, 201163);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1006, 1006, to_date('14-06-2023', 'dd-mm-yyyy'), 277761157, 281154307, 201894);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1007, 1007, to_date('13-06-2023', 'dd-mm-yyyy'), 254655746, 320345744, 202546);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1008, 1008, to_date('19-06-2023', 'dd-mm-yyyy'), 259520122, 325389215, 202775);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1009, 1009, to_date('04-06-2023', 'dd-mm-yyyy'), 351897231, 210470680, 203216);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1010, 1010, to_date('12-06-2023', 'dd-mm-yyyy'), 296014467, 335673295, 203421);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1011, 1011, to_date('29-06-2023', 'dd-mm-yyyy'), 270448006, 310266508, 203874);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1012, 1012, to_date('03-06-2023', 'dd-mm-yyyy'), 318636111, 335012305, 204263);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1013, 1013, to_date('04-06-2023', 'dd-mm-yyyy'), 317148159, 272173133, 204805);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1014, 1014, to_date('13-06-2023', 'dd-mm-yyyy'), 223177804, 355616367, 204870);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1015, 1015, to_date('11-06-2023', 'dd-mm-yyyy'), 301472986, 363641567, 205059);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1016, 1016, to_date('24-06-2023', 'dd-mm-yyyy'), 373968030, 341750599, 205586);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1017, 1017, to_date('16-06-2023', 'dd-mm-yyyy'), 300000000, 274810074, 205785);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1018, 1018, to_date('17-06-2023', 'dd-mm-yyyy'), 300000001, 227710098, 205893);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1019, 1019, to_date('20-06-2023', 'dd-mm-yyyy'), 300000002, 362506458, 206191);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1020, 1020, to_date('06-06-2023', 'dd-mm-yyyy'), 300000003, 209218853, 206616);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1021, 1021, to_date('15-06-2023', 'dd-mm-yyyy'), 300000004, 374271549, 206690);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1022, 1022, to_date('22-06-2023', 'dd-mm-yyyy'), 300000005, 381386109, 207566);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1023, 1023, to_date('31-05-2023', 'dd-mm-yyyy'), 300000006, 380347031, 208308);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1024, 1024, to_date('12-06-2023', 'dd-mm-yyyy'), 300000007, 287359609, 211623);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1025, 1025, to_date('11-06-2023', 'dd-mm-yyyy'), 300000008, 277303119, 212311);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1026, 1026, to_date('18-06-2023', 'dd-mm-yyyy'), 300000009, 288367846, 212885);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1027, 1027, to_date('08-06-2023', 'dd-mm-yyyy'), 300000010, 316073442, 213289);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1028, 1028, to_date('04-06-2023', 'dd-mm-yyyy'), 300000011, 202318062, 214126);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1029, 1029, to_date('02-06-2023', 'dd-mm-yyyy'), 300000012, 296490615, 214552);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1030, 1030, to_date('27-06-2023', 'dd-mm-yyyy'), 300000013, 363888243, 214701);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1031, 1031, to_date('27-06-2023', 'dd-mm-yyyy'), 300000014, 271851580, 214952);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1032, 1032, to_date('08-06-2023', 'dd-mm-yyyy'), 300000015, 378494685, 217895);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1033, 1033, to_date('06-06-2023', 'dd-mm-yyyy'), 300000016, 217461665, 218086);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1034, 1034, to_date('27-06-2023', 'dd-mm-yyyy'), 300000017, 385006976, 219997);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1035, 1035, to_date('24-06-2023', 'dd-mm-yyyy'), 300000018, 288385654, 220954);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1036, 1036, to_date('18-06-2023', 'dd-mm-yyyy'), 300000019, 381994314, 221131);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1037, 1037, to_date('04-06-2023', 'dd-mm-yyyy'), 300000020, 220647788, 221198);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1038, 1038, to_date('05-06-2023', 'dd-mm-yyyy'), 300000021, 318996086, 221448);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1039, 1039, to_date('19-06-2023', 'dd-mm-yyyy'), 300000022, 378745713, 221484);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1040, 1040, to_date('14-06-2023', 'dd-mm-yyyy'), 300000023, 382190490, 222599);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1041, 1041, to_date('08-06-2023', 'dd-mm-yyyy'), 300000024, 357450766, 223134);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1042, 1042, to_date('15-06-2023', 'dd-mm-yyyy'), 300000025, 382262708, 224137);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1043, 1043, to_date('31-05-2023', 'dd-mm-yyyy'), 300000026, 329333824, 225168);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1044, 1044, to_date('07-06-2023', 'dd-mm-yyyy'), 300000027, 295623764, 225184);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1045, 1045, to_date('22-06-2023', 'dd-mm-yyyy'), 300000028, 258157080, 225649);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1046, 1046, to_date('20-06-2023', 'dd-mm-yyyy'), 300000029, 237777658, 226597);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1047, 1047, to_date('23-06-2023', 'dd-mm-yyyy'), 300000030, 304082692, 226730);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1048, 1048, to_date('02-06-2023', 'dd-mm-yyyy'), 300000031, 343952758, 226832);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1049, 1049, to_date('16-06-2023', 'dd-mm-yyyy'), 300000032, 226444135, 227283);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1050, 1050, to_date('11-06-2023', 'dd-mm-yyyy'), 300000033, 326478636, 227660);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1051, 1051, to_date('16-06-2023', 'dd-mm-yyyy'), 300000034, 295480431, 229674);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1052, 1052, to_date('08-06-2023', 'dd-mm-yyyy'), 300000035, 345176686, 231694);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1053, 1053, to_date('19-06-2023', 'dd-mm-yyyy'), 300000036, 362822032, 232061);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1054, 1054, to_date('21-06-2023', 'dd-mm-yyyy'), 300000037, 205616776, 232131);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1055, 1055, to_date('05-06-2023', 'dd-mm-yyyy'), 300000038, 313515270, 232664);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1056, 1056, to_date('31-05-2023', 'dd-mm-yyyy'), 300000039, 234848134, 233082);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1057, 1057, to_date('07-06-2023', 'dd-mm-yyyy'), 300000040, 296854630, 233243);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1058, 1058, to_date('03-06-2023', 'dd-mm-yyyy'), 300000041, 214515321, 233295);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1059, 1059, to_date('04-06-2023', 'dd-mm-yyyy'), 300000042, 211133927, 233459);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1060, 1060, to_date('22-06-2023', 'dd-mm-yyyy'), 300000043, 371494810, 233794);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1061, 1061, to_date('10-06-2023', 'dd-mm-yyyy'), 300000044, 255503675, 234262);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1062, 1062, to_date('29-06-2023', 'dd-mm-yyyy'), 300000045, 295709145, 234640);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1063, 1063, to_date('26-06-2023', 'dd-mm-yyyy'), 300000046, 372307406, 235481);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1064, 1064, to_date('24-06-2023', 'dd-mm-yyyy'), 300000047, 227969024, 236016);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1065, 1065, to_date('10-06-2023', 'dd-mm-yyyy'), 300000048, 252439705, 236715);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1066, 1066, to_date('29-06-2023', 'dd-mm-yyyy'), 300000049, 296933887, 237614);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1067, 1067, to_date('08-06-2023', 'dd-mm-yyyy'), 300000050, 356297958, 237657);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1068, 1068, to_date('10-06-2023', 'dd-mm-yyyy'), 300000051, 387943673, 239221);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1069, 1069, to_date('18-06-2023', 'dd-mm-yyyy'), 300000052, 310663510, 239240);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1070, 1070, to_date('19-06-2023', 'dd-mm-yyyy'), 300000053, 236933452, 240835);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1071, 1071, to_date('14-06-2023', 'dd-mm-yyyy'), 300000054, 239220981, 240857);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1072, 1072, to_date('27-06-2023', 'dd-mm-yyyy'), 300000055, 274273432, 242282);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1073, 1073, to_date('21-06-2023', 'dd-mm-yyyy'), 300000056, 308281893, 243663);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1074, 1074, to_date('20-06-2023', 'dd-mm-yyyy'), 300000057, 205554610, 243817);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1075, 1075, to_date('23-06-2023', 'dd-mm-yyyy'), 300000058, 321495574, 244178);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1076, 1076, to_date('25-06-2023', 'dd-mm-yyyy'), 300000059, 233439957, 244416);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1077, 1077, to_date('18-06-2023', 'dd-mm-yyyy'), 300000060, 364781468, 244497);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1078, 1078, to_date('26-06-2023', 'dd-mm-yyyy'), 300000061, 376097465, 244674);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1079, 1079, to_date('24-06-2023', 'dd-mm-yyyy'), 300000062, 237277522, 245624);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1080, 1080, to_date('16-06-2023', 'dd-mm-yyyy'), 300000063, 307799804, 246151);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1081, 1081, to_date('24-06-2023', 'dd-mm-yyyy'), 300000064, 262644266, 246170);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1082, 1082, to_date('02-06-2023', 'dd-mm-yyyy'), 300000065, 325390520, 246410);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1083, 1083, to_date('05-06-2023', 'dd-mm-yyyy'), 300000066, 259468455, 248439);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1084, 1084, to_date('08-06-2023', 'dd-mm-yyyy'), 300000067, 234853838, 248697);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1085, 1085, to_date('01-06-2023', 'dd-mm-yyyy'), 300000068, 246648879, 248698);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1086, 1086, to_date('01-06-2023', 'dd-mm-yyyy'), 300000069, 324559120, 249583);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1087, 1087, to_date('04-06-2023', 'dd-mm-yyyy'), 3903371002, 231394919, 250149);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1088, 1088, to_date('29-06-2023', 'dd-mm-yyyy'), 1879700281, 320256878, 250849);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1089, 1089, to_date('24-06-2023', 'dd-mm-yyyy'), 2441850588, 270700908, 251245);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1090, 1090, to_date('23-06-2023', 'dd-mm-yyyy'), 2864541163, 280955985, 251504);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1091, 1091, to_date('13-06-2023', 'dd-mm-yyyy'), 4056867800, 343751129, 252438);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1092, 1092, to_date('10-06-2023', 'dd-mm-yyyy'), 186866407, 218786324, 253014);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1093, 1093, to_date('13-06-2023', 'dd-mm-yyyy'), 746479019, 319536448, 253053);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1094, 1094, to_date('08-06-2023', 'dd-mm-yyyy'), 3143480143, 229222618, 253223);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1095, 1095, to_date('09-06-2023', 'dd-mm-yyyy'), 2747677398, 232899139, 253634);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1096, 1096, to_date('08-06-2023', 'dd-mm-yyyy'), 872969459, 304988522, 254067);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1097, 1097, to_date('19-06-2023', 'dd-mm-yyyy'), 2655330264, 300142382, 254205);
-commit;
-prompt 100 records committed...
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1098, 1098, to_date('14-06-2023', 'dd-mm-yyyy'), 2389134866, 236950311, 255356);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1099, 1099, to_date('22-06-2023', 'dd-mm-yyyy'), 1720691470, 334120188, 256411);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1100, 1100, to_date('20-06-2023', 'dd-mm-yyyy'), 2908034953, 292721604, 256601);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1103, 1103, to_date('21-06-2023', 'dd-mm-yyyy'), 1383563457, 350910955, 258532);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1104, 1104, to_date('14-06-2023', 'dd-mm-yyyy'), 917662982, 260313579, 258996);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1105, 1105, to_date('20-06-2023', 'dd-mm-yyyy'), 4279766685, 358656201, 259651);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1106, 1106, to_date('10-06-2023', 'dd-mm-yyyy'), 4070415692, 263316337, 260182);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1107, 1107, to_date('25-06-2023', 'dd-mm-yyyy'), 43741307, 388918507, 260861);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1108, 1108, to_date('26-06-2023', 'dd-mm-yyyy'), 1099185040, 355554389, 261679);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1109, 1109, to_date('07-06-2023', 'dd-mm-yyyy'), 3035600398, 329984528, 262517);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1110, 1110, to_date('23-06-2023', 'dd-mm-yyyy'), 3997273524, 289104838, 264231);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1111, 1111, to_date('03-06-2023', 'dd-mm-yyyy'), 2163649097, 280607651, 264672);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1112, 1112, to_date('06-06-2023', 'dd-mm-yyyy'), 3266985349, 252240713, 265028);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1113, 1113, to_date('17-06-2023', 'dd-mm-yyyy'), 1490835305, 353282291, 265664);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1114, 1114, to_date('12-06-2023', 'dd-mm-yyyy'), 2637819983, 234674022, 266414);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1115, 1115, to_date('07-06-2023', 'dd-mm-yyyy'), 1948950048, 274254467, 266880);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1116, 1116, to_date('17-06-2023', 'dd-mm-yyyy'), 2515842397, 237492254, 267055);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1117, 1117, to_date('20-06-2023', 'dd-mm-yyyy'), 3954106081, 352245013, 267411);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1118, 1118, to_date('09-06-2023', 'dd-mm-yyyy'), 4284641519, 296078129, 269579);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1119, 1119, to_date('02-06-2023', 'dd-mm-yyyy'), 1447266928, 228359755, 269838);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1120, 1120, to_date('05-06-2023', 'dd-mm-yyyy'), 4292899919, 346558251, 270157);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1121, 1121, to_date('12-06-2023', 'dd-mm-yyyy'), 3182428857, 341643467, 270464);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1122, 1122, to_date('21-06-2023', 'dd-mm-yyyy'), 1691007647, 264129045, 271073);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1123, 1123, to_date('18-06-2023', 'dd-mm-yyyy'), 940595999, 200076168, 272070);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1124, 1124, to_date('11-06-2023', 'dd-mm-yyyy'), 2845853303, 279332987, 274241);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1125, 1125, to_date('04-06-2023', 'dd-mm-yyyy'), 2165764715, 382386541, 274497);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1126, 1126, to_date('30-05-2023', 'dd-mm-yyyy'), 3571026378, 355379591, 275336);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1127, 1127, to_date('28-06-2023', 'dd-mm-yyyy'), 2127673954, 233742748, 275611);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1128, 1128, to_date('03-06-2023', 'dd-mm-yyyy'), 2141673170, 220299024, 276188);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1129, 1129, to_date('19-06-2023', 'dd-mm-yyyy'), 675810060, 225050898, 277084);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1130, 1130, to_date('24-06-2023', 'dd-mm-yyyy'), 4131434005, 341456397, 277566);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1131, 1131, to_date('09-06-2023', 'dd-mm-yyyy'), 14814539, 243120652, 278613);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1132, 1132, to_date('26-06-2023', 'dd-mm-yyyy'), 2118179539, 261116928, 278958);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1133, 1133, to_date('12-06-2023', 'dd-mm-yyyy'), 28268369, 224221194, 279796);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1134, 1134, to_date('22-06-2023', 'dd-mm-yyyy'), 1174302048, 209711155, 280109);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1135, 1135, to_date('17-06-2023', 'dd-mm-yyyy'), 3135876155, 358423787, 280748);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1136, 1136, to_date('06-06-2023', 'dd-mm-yyyy'), 554260379, 352580218, 280838);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1137, 1137, to_date('18-06-2023', 'dd-mm-yyyy'), 3689513631, 213484577, 280924);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1138, 1138, to_date('15-06-2023', 'dd-mm-yyyy'), 3408806016, 315658972, 282022);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1139, 1139, to_date('31-05-2023', 'dd-mm-yyyy'), 1715075258, 256738120, 282054);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1140, 1140, to_date('27-06-2023', 'dd-mm-yyyy'), 116474885, 290154315, 282225);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1141, 1141, to_date('02-06-2023', 'dd-mm-yyyy'), 3202065817, 298423242, 282232);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1142, 1142, to_date('12-06-2023', 'dd-mm-yyyy'), 1220471043, 365172580, 282365);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1143, 1143, to_date('16-06-2023', 'dd-mm-yyyy'), 1749509824, 221923419, 282744);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1144, 1144, to_date('08-06-2023', 'dd-mm-yyyy'), 225961850, 234818209, 283508);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1145, 1145, to_date('06-06-2023', 'dd-mm-yyyy'), 1296197165, 352448787, 284124);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1146, 1146, to_date('08-06-2023', 'dd-mm-yyyy'), 2111217503, 221901164, 284760);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1147, 1147, to_date('10-06-2023', 'dd-mm-yyyy'), 2340213410, 267591151, 285166);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1148, 1148, to_date('13-06-2023', 'dd-mm-yyyy'), 4264224831, 228427626, 285589);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1149, 1149, to_date('12-06-2023', 'dd-mm-yyyy'), 191393017, 367822102, 286275);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1150, 1150, to_date('01-06-2023', 'dd-mm-yyyy'), 3091734977, 262882544, 286423);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1151, 1151, to_date('02-06-2023', 'dd-mm-yyyy'), 2400502670, 354252310, 286548);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1152, 1152, to_date('11-06-2023', 'dd-mm-yyyy'), 3867040414, 250318415, 286981);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1153, 1153, to_date('31-05-2023', 'dd-mm-yyyy'), 4032224694, 251702571, 287133);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1154, 1154, to_date('04-06-2023', 'dd-mm-yyyy'), 2854517838, 382817463, 287258);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1155, 1155, to_date('12-06-2023', 'dd-mm-yyyy'), 929206898, 219228918, 287362);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1156, 1156, to_date('15-06-2023', 'dd-mm-yyyy'), 4274484785, 319368928, 288052);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1157, 1157, to_date('08-06-2023', 'dd-mm-yyyy'), 1944228016, 364570311, 290567);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1158, 1158, to_date('29-06-2023', 'dd-mm-yyyy'), 209999444, 214974740, 290598);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1159, 1159, to_date('08-06-2023', 'dd-mm-yyyy'), 2171326129, 235422949, 290628);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1160, 1160, to_date('01-06-2023', 'dd-mm-yyyy'), 1700335718, 383240133, 290713);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1161, 1161, to_date('24-06-2023', 'dd-mm-yyyy'), 1747014656, 345865205, 291820);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1162, 1162, to_date('01-06-2023', 'dd-mm-yyyy'), 3105782945, 334196039, 292365);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1163, 1163, to_date('30-05-2023', 'dd-mm-yyyy'), 2218215705, 202536414, 292646);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1164, 1164, to_date('21-06-2023', 'dd-mm-yyyy'), 683986443, 354012211, 293063);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1165, 1165, to_date('19-06-2023', 'dd-mm-yyyy'), 880915287, 279186496, 293579);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1166, 1166, to_date('22-06-2023', 'dd-mm-yyyy'), 16630229, 264968973, 294531);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1167, 1167, to_date('04-06-2023', 'dd-mm-yyyy'), 175901514, 241836382, 294631);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1168, 1168, to_date('21-06-2023', 'dd-mm-yyyy'), 3000391211, 316936386, 295791);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1169, 1169, to_date('24-06-2023', 'dd-mm-yyyy'), 2585543413, 316896662, 297159);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1170, 1170, to_date('02-06-2023', 'dd-mm-yyyy'), 2761848852, 375037348, 297586);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1171, 1171, to_date('15-06-2023', 'dd-mm-yyyy'), 791072108, 223058663, 297661);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1172, 1172, to_date('27-06-2023', 'dd-mm-yyyy'), 750332103, 226520741, 297770);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1173, 1173, to_date('18-06-2023', 'dd-mm-yyyy'), 2132466374, 251473344, 299980);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1174, 1174, to_date('15-06-2023', 'dd-mm-yyyy'), 2563622969, 342517245, 300049);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1175, 1175, to_date('22-06-2023', 'dd-mm-yyyy'), 1162078782, 279543919, 301174);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1176, 1176, to_date('21-06-2023', 'dd-mm-yyyy'), 1790631476, 351668768, 301396);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1177, 1177, to_date('25-06-2023', 'dd-mm-yyyy'), 2499086167, 378453080, 302711);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1178, 1178, to_date('22-06-2023', 'dd-mm-yyyy'), 3838034560, 231987717, 303183);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1179, 1179, to_date('28-06-2023', 'dd-mm-yyyy'), 2659036125, 265199943, 304607);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1180, 1180, to_date('18-06-2023', 'dd-mm-yyyy'), 3633182606, 359089400, 304661);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1181, 1181, to_date('24-06-2023', 'dd-mm-yyyy'), 1721112606, 293310565, 304802);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1182, 1182, to_date('01-06-2023', 'dd-mm-yyyy'), 4108380694, 382524856, 307284);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1183, 1183, to_date('29-06-2023', 'dd-mm-yyyy'), 1515581915, 234383859, 308883);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1184, 1184, to_date('26-06-2023', 'dd-mm-yyyy'), 118976950, 291697284, 308940);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1185, 1185, to_date('10-06-2023', 'dd-mm-yyyy'), 3030217035, 292117233, 309155);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1186, 1186, to_date('30-05-2023', 'dd-mm-yyyy'), 3488016959, 348147944, 309834);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1187, 1187, to_date('13-06-2023', 'dd-mm-yyyy'), 1747392301, 273298003, 312159);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1188, 1188, to_date('27-06-2023', 'dd-mm-yyyy'), 3224426277, 286222029, 312333);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1189, 1189, to_date('21-06-2023', 'dd-mm-yyyy'), 2000809820, 213322864, 312614);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1190, 1190, to_date('04-06-2023', 'dd-mm-yyyy'), 443234907, 218646495, 312727);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1191, 1191, to_date('06-06-2023', 'dd-mm-yyyy'), 3189841920, 338993209, 314173);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1192, 1192, to_date('01-06-2023', 'dd-mm-yyyy'), 937385985, 291745197, 315006);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1193, 1193, to_date('23-06-2023', 'dd-mm-yyyy'), 1142950160, 295504003, 315937);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1194, 1194, to_date('08-06-2023', 'dd-mm-yyyy'), 1781354773, 286256884, 316747);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1195, 1195, to_date('09-06-2023', 'dd-mm-yyyy'), 3907058574, 239573283, 317898);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1196, 1196, to_date('21-06-2023', 'dd-mm-yyyy'), 509672752, 338383773, 318149);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1197, 1197, to_date('20-06-2023', 'dd-mm-yyyy'), 1393501725, 313422914, 318220);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1198, 1198, to_date('03-06-2023', 'dd-mm-yyyy'), 2260158743, 201157338, 318228);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1199, 1199, to_date('24-06-2023', 'dd-mm-yyyy'), 3082585767, 316694395, 318244);
-commit;
-prompt 200 records committed...
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1200, 1200, to_date('22-06-2023', 'dd-mm-yyyy'), 1877959785, 242838870, 320413);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1201, 1201, to_date('12-06-2023', 'dd-mm-yyyy'), 1660146012, 332240843, 320865);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1202, 1202, to_date('23-06-2023', 'dd-mm-yyyy'), 3979804712, 326250050, 321292);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1203, 1203, to_date('27-06-2023', 'dd-mm-yyyy'), 582588412, 208953132, 321442);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1204, 1204, to_date('14-06-2023', 'dd-mm-yyyy'), 3173876124, 345028424, 321559);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1205, 1205, to_date('03-06-2023', 'dd-mm-yyyy'), 620223331, 387229316, 321758);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1206, 1206, to_date('21-06-2023', 'dd-mm-yyyy'), 2418851966, 259199134, 323236);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1207, 1207, to_date('08-06-2023', 'dd-mm-yyyy'), 3481561594, 342256992, 323658);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1208, 1208, to_date('31-05-2023', 'dd-mm-yyyy'), 220372518, 357522613, 323926);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1209, 1209, to_date('25-06-2023', 'dd-mm-yyyy'), 4157143176, 243823245, 324295);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1210, 1210, to_date('30-05-2023', 'dd-mm-yyyy'), 2779816091, 367193204, 324534);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1211, 1211, to_date('02-06-2023', 'dd-mm-yyyy'), 1201267855, 200771028, 325716);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1212, 1212, to_date('17-06-2023', 'dd-mm-yyyy'), 2703360325, 297000767, 326187);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1213, 1213, to_date('30-05-2023', 'dd-mm-yyyy'), 234257385, 250359573, 326661);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1214, 1214, to_date('12-06-2023', 'dd-mm-yyyy'), 2029500891, 257401303, 327117);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1215, 1215, to_date('21-06-2023', 'dd-mm-yyyy'), 221412715, 209534435, 327311);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1216, 1216, to_date('04-06-2023', 'dd-mm-yyyy'), 2929262243, 294448518, 327313);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1217, 1217, to_date('16-06-2023', 'dd-mm-yyyy'), 708880321, 353345218, 327703);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1218, 1218, to_date('14-06-2023', 'dd-mm-yyyy'), 1295334620, 313590950, 327842);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1219, 1219, to_date('01-06-2023', 'dd-mm-yyyy'), 2420932006, 237340794, 327952);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1220, 1220, to_date('11-06-2023', 'dd-mm-yyyy'), 2721361582, 308313920, 328298);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1221, 1221, to_date('22-06-2023', 'dd-mm-yyyy'), 238313927, 282598062, 329005);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1222, 1222, to_date('25-06-2023', 'dd-mm-yyyy'), 2649231766, 316877033, 329850);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1223, 1223, to_date('03-06-2023', 'dd-mm-yyyy'), 2073397479, 315975743, 330304);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1224, 1224, to_date('25-06-2023', 'dd-mm-yyyy'), 1629072520, 242341315, 331052);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1225, 1225, to_date('05-06-2023', 'dd-mm-yyyy'), 2373393757, 351104744, 331725);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1226, 1226, to_date('19-06-2023', 'dd-mm-yyyy'), 1155533144, 236070328, 332607);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1227, 1227, to_date('25-06-2023', 'dd-mm-yyyy'), 2333424436, 289405820, 333053);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1228, 1228, to_date('22-06-2023', 'dd-mm-yyyy'), 1848932145, 257301681, 333412);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1229, 1229, to_date('11-06-2023', 'dd-mm-yyyy'), 3292746234, 271938993, 333939);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1230, 1230, to_date('23-06-2023', 'dd-mm-yyyy'), 3068711309, 340594367, 334772);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1231, 1231, to_date('13-06-2023', 'dd-mm-yyyy'), 3517253153, 284012229, 334886);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1232, 1232, to_date('07-06-2023', 'dd-mm-yyyy'), 3611290723, 353338208, 334999);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1233, 1233, to_date('08-06-2023', 'dd-mm-yyyy'), 2944875005, 282084259, 335224);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1234, 1234, to_date('31-05-2023', 'dd-mm-yyyy'), 823918207, 306439412, 335506);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1235, 1235, to_date('03-06-2023', 'dd-mm-yyyy'), 1888219726, 328463277, 335660);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1236, 1236, to_date('02-06-2023', 'dd-mm-yyyy'), 901432435, 247145869, 337928);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1237, 1237, to_date('12-06-2023', 'dd-mm-yyyy'), 3461336247, 360504390, 339261);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1238, 1238, to_date('16-06-2023', 'dd-mm-yyyy'), 667710806, 263122301, 339979);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1239, 1239, to_date('10-06-2023', 'dd-mm-yyyy'), 1860377559, 349319230, 340551);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1240, 1240, to_date('03-06-2023', 'dd-mm-yyyy'), 1279348624, 235703717, 341768);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1241, 1241, to_date('08-06-2023', 'dd-mm-yyyy'), 3457912328, 215306111, 341774);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1242, 1242, to_date('22-06-2023', 'dd-mm-yyyy'), 1030882184, 317120894, 341909);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1243, 1243, to_date('03-06-2023', 'dd-mm-yyyy'), 2189110660, 295963344, 342305);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1244, 1244, to_date('03-06-2023', 'dd-mm-yyyy'), 3030370212, 365778672, 342428);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1245, 1245, to_date('15-06-2023', 'dd-mm-yyyy'), 145406197, 292337047, 344750);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1246, 1246, to_date('23-06-2023', 'dd-mm-yyyy'), 3032558076, 264751878, 344944);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1247, 1247, to_date('23-06-2023', 'dd-mm-yyyy'), 4097297588, 385952818, 345455);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1248, 1248, to_date('27-06-2023', 'dd-mm-yyyy'), 670841603, 215919530, 345475);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1249, 1249, to_date('13-06-2023', 'dd-mm-yyyy'), 3092043234, 305063038, 347525);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1250, 1250, to_date('19-06-2023', 'dd-mm-yyyy'), 2517659001, 304960689, 347562);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1251, 1251, to_date('14-06-2023', 'dd-mm-yyyy'), 524583443, 369383417, 347733);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1252, 1252, to_date('30-05-2023', 'dd-mm-yyyy'), 4209255256, 315159983, 347818);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1253, 1253, to_date('02-06-2023', 'dd-mm-yyyy'), 3303430975, 383068508, 347873);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1254, 1254, to_date('02-06-2023', 'dd-mm-yyyy'), 4134052510, 379992281, 347981);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1255, 1255, to_date('27-06-2023', 'dd-mm-yyyy'), 1148855233, 368361520, 348727);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1256, 1256, to_date('31-05-2023', 'dd-mm-yyyy'), 2195239809, 380149339, 348848);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1257, 1257, to_date('23-06-2023', 'dd-mm-yyyy'), 3238496450, 294023629, 349074);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1258, 1258, to_date('26-06-2023', 'dd-mm-yyyy'), 490180534, 379411520, 349099);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1259, 1259, to_date('03-06-2023', 'dd-mm-yyyy'), 900040387, 385177335, 349703);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1260, 1260, to_date('25-06-2023', 'dd-mm-yyyy'), 449644944, 239929754, 350947);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1261, 1261, to_date('01-06-2023', 'dd-mm-yyyy'), 3533811218, 221462028, 351026);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1262, 1262, to_date('27-06-2023', 'dd-mm-yyyy'), 1218862098, 260441923, 351081);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1263, 1263, to_date('11-06-2023', 'dd-mm-yyyy'), 1150216031, 370273040, 351124);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1264, 1264, to_date('11-06-2023', 'dd-mm-yyyy'), 2623671494, 245078686, 353090);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1265, 1265, to_date('11-06-2023', 'dd-mm-yyyy'), 1082024660, 358212799, 353284);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1266, 1266, to_date('29-06-2023', 'dd-mm-yyyy'), 3212917977, 325091518, 354193);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1267, 1267, to_date('07-06-2023', 'dd-mm-yyyy'), 3704443836, 318599595, 354851);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1268, 1268, to_date('21-06-2023', 'dd-mm-yyyy'), 4136582605, 285435332, 355023);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1269, 1269, to_date('06-06-2023', 'dd-mm-yyyy'), 428074911, 232830547, 355220);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1270, 1270, to_date('09-06-2023', 'dd-mm-yyyy'), 3994028077, 232034549, 355503);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1271, 1271, to_date('24-06-2023', 'dd-mm-yyyy'), 381605407, 290455974, 355607);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1272, 1272, to_date('06-06-2023', 'dd-mm-yyyy'), 2261379361, 388129809, 356241);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1273, 1273, to_date('26-06-2023', 'dd-mm-yyyy'), 2998668774, 253867252, 356294);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1274, 1274, to_date('13-06-2023', 'dd-mm-yyyy'), 1715394225, 308717810, 356322);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1275, 1275, to_date('02-06-2023', 'dd-mm-yyyy'), 3992596192, 300404573, 357246);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1276, 1276, to_date('07-06-2023', 'dd-mm-yyyy'), 762098278, 215133805, 357550);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1277, 1277, to_date('05-06-2023', 'dd-mm-yyyy'), 4263432723, 214329655, 358995);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1278, 1278, to_date('10-06-2023', 'dd-mm-yyyy'), 2387702559, 226660320, 359321);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1279, 1279, to_date('07-06-2023', 'dd-mm-yyyy'), 1294033638, 255356533, 359768);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1280, 1280, to_date('18-06-2023', 'dd-mm-yyyy'), 4289386642, 337051483, 359769);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1281, 1281, to_date('18-06-2023', 'dd-mm-yyyy'), 3170169411, 376165958, 359770);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1282, 1282, to_date('11-06-2023', 'dd-mm-yyyy'), 2589336619, 220415119, 359771);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1283, 1283, to_date('11-06-2023', 'dd-mm-yyyy'), 408119777, 360420742, 359772);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1284, 1284, to_date('05-06-2023', 'dd-mm-yyyy'), 2745029688, 227369348, 359773);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1285, 1285, to_date('04-06-2023', 'dd-mm-yyyy'), 3999013901, 352125561, 359774);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1286, 1286, to_date('15-06-2023', 'dd-mm-yyyy'), 395745494, 388161917, 359775);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1287, 1287, to_date('07-06-2023', 'dd-mm-yyyy'), 3384845406, 368610255, 359776);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1288, 1288, to_date('20-06-2023', 'dd-mm-yyyy'), 1571758849, 318883867, 359777);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1289, 1289, to_date('17-06-2023', 'dd-mm-yyyy'), 2201884681, 359835609, 359778);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1290, 1290, to_date('03-06-2023', 'dd-mm-yyyy'), 2930896282, 309399354, 359779);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1291, 1291, to_date('21-06-2023', 'dd-mm-yyyy'), 3244876693, 277999888, 359780);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1292, 1292, to_date('01-06-2023', 'dd-mm-yyyy'), 2801048856, 311525561, 359781);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1293, 1293, to_date('05-06-2023', 'dd-mm-yyyy'), 1711596415, 350438065, 359782);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1294, 1294, to_date('16-06-2023', 'dd-mm-yyyy'), 3357212618, 312705624, 359783);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1295, 1295, to_date('27-06-2023', 'dd-mm-yyyy'), 3500429192, 377428731, 359784);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1296, 1296, to_date('07-06-2023', 'dd-mm-yyyy'), 2177147130, 218298341, 359785);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1297, 1297, to_date('03-06-2023', 'dd-mm-yyyy'), 1310860904, 351631101, 359786);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1298, 1298, to_date('09-06-2023', 'dd-mm-yyyy'), 2546024439, 264036200, 359787);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1299, 1299, to_date('01-06-2023', 'dd-mm-yyyy'), 2695624626, 299341333, 359788);
-commit;
-prompt 300 records committed...
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1300, 1300, to_date('21-06-2023', 'dd-mm-yyyy'), 723619990, 233552819, 359789);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1301, 1301, to_date('08-06-2023', 'dd-mm-yyyy'), 1153830371, 310000000, 359790);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1302, 1302, to_date('16-06-2023', 'dd-mm-yyyy'), 3893286587, 310000001, 359791);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1303, 1303, to_date('13-06-2023', 'dd-mm-yyyy'), 82937339, 310000002, 359792);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1304, 1304, to_date('06-06-2023', 'dd-mm-yyyy'), 1017840928, 310000003, 359793);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1305, 1305, to_date('30-05-2023', 'dd-mm-yyyy'), 4271323511, 310000004, 359794);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1306, 1306, to_date('10-06-2023', 'dd-mm-yyyy'), 505370118, 310000005, 359795);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1307, 1307, to_date('05-06-2023', 'dd-mm-yyyy'), 3872777923, 310000006, 359796);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1308, 1308, to_date('18-06-2023', 'dd-mm-yyyy'), 1625454938, 310000007, 359797);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1309, 1309, to_date('27-06-2023', 'dd-mm-yyyy'), 2457452168, 310000008, 359798);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1310, 1310, to_date('18-06-2023', 'dd-mm-yyyy'), 2267746773, 310000009, 359799);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1311, 1311, to_date('12-06-2023', 'dd-mm-yyyy'), 3806033862, 310000010, 359800);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1312, 1312, to_date('01-06-2023', 'dd-mm-yyyy'), 400764289, 310000011, 359801);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1313, 1313, to_date('29-06-2023', 'dd-mm-yyyy'), 3545515586, 310000012, 359802);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1314, 1314, to_date('27-06-2023', 'dd-mm-yyyy'), 3834351364, 310000013, 359803);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1315, 1315, to_date('26-06-2023', 'dd-mm-yyyy'), 1013696666, 310000014, 359804);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1316, 1316, to_date('19-06-2023', 'dd-mm-yyyy'), 3388722296, 310000015, 359805);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1317, 1317, to_date('08-06-2023', 'dd-mm-yyyy'), 196310980, 310000016, 359806);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1318, 1318, to_date('25-06-2023', 'dd-mm-yyyy'), 3025067115, 310000017, 359807);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1319, 1319, to_date('12-06-2023', 'dd-mm-yyyy'), 4823046, 310000018, 359808);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1320, 1320, to_date('16-06-2023', 'dd-mm-yyyy'), 657469100, 310000019, 359809);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1321, 1321, to_date('30-05-2023', 'dd-mm-yyyy'), 3513889593, 310000020, 359810);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1322, 1322, to_date('26-06-2023', 'dd-mm-yyyy'), 562736699, 310000021, 359811);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1323, 1323, to_date('17-06-2023', 'dd-mm-yyyy'), 276551217, 310000022, 359812);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1324, 1324, to_date('08-06-2023', 'dd-mm-yyyy'), 4170852646, 310000023, 359813);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1325, 1325, to_date('29-06-2023', 'dd-mm-yyyy'), 238671426, 310000024, 359814);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1326, 1326, to_date('17-06-2023', 'dd-mm-yyyy'), 2310616106, 310000025, 359815);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1327, 1327, to_date('07-06-2023', 'dd-mm-yyyy'), 4044514624, 310000026, 359816);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1328, 1328, to_date('22-06-2023', 'dd-mm-yyyy'), 397181319, 310000027, 359817);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1329, 1329, to_date('12-06-2023', 'dd-mm-yyyy'), 982716585, 310000028, 359818);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1330, 1330, to_date('22-06-2023', 'dd-mm-yyyy'), 1556219250, 310000029, 359819);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1331, 1331, to_date('28-06-2023', 'dd-mm-yyyy'), 3584288395, 310000030, 359820);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1332, 1332, to_date('08-06-2023', 'dd-mm-yyyy'), 1998832504, 310000031, 359821);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1333, 1333, to_date('22-06-2023', 'dd-mm-yyyy'), 2611671527, 310000032, 359822);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1334, 1334, to_date('02-06-2023', 'dd-mm-yyyy'), 1928912117, 310000033, 359823);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1335, 1335, to_date('02-06-2023', 'dd-mm-yyyy'), 3940023093, 310000034, 359824);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1336, 1336, to_date('09-06-2023', 'dd-mm-yyyy'), 2369112239, 310000035, 359825);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1337, 1337, to_date('28-06-2023', 'dd-mm-yyyy'), 81557478, 310000036, 359826);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1338, 1338, to_date('31-05-2023', 'dd-mm-yyyy'), 142186532, 310000037, 359827);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1339, 1339, to_date('06-06-2023', 'dd-mm-yyyy'), 3196158797, 310000038, 359828);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1340, 1340, to_date('05-06-2023', 'dd-mm-yyyy'), 3970642656, 310000039, 359829);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1341, 1341, to_date('15-06-2023', 'dd-mm-yyyy'), 2699849518, 310000040, 359830);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1342, 1342, to_date('30-05-2023', 'dd-mm-yyyy'), 1272943148, 310000041, 359831);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1343, 1343, to_date('15-06-2023', 'dd-mm-yyyy'), 2112001926, 310000042, 359832);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1344, 1344, to_date('04-06-2023', 'dd-mm-yyyy'), 3071216489, 310000043, 359833);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1345, 1345, to_date('21-06-2023', 'dd-mm-yyyy'), 4173111480, 310000044, 359834);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1346, 1346, to_date('26-06-2023', 'dd-mm-yyyy'), 4159326597, 310000045, 359835);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1347, 1347, to_date('09-06-2023', 'dd-mm-yyyy'), 944023186, 310000046, 359836);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1348, 1348, to_date('02-06-2023', 'dd-mm-yyyy'), 476547254, 310000047, 359837);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1349, 1349, to_date('31-05-2023', 'dd-mm-yyyy'), 2932990645, 310000048, 359838);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1350, 1350, to_date('19-06-2023', 'dd-mm-yyyy'), 660929753, 310000049, 359839);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1351, 1351, to_date('11-06-2023', 'dd-mm-yyyy'), 1112726679, 310000050, 359840);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1352, 1352, to_date('20-06-2023', 'dd-mm-yyyy'), 3924827205, 310000051, 359841);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1353, 1353, to_date('29-06-2023', 'dd-mm-yyyy'), 1967453781, 310000052, 359842);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1354, 1354, to_date('18-06-2023', 'dd-mm-yyyy'), 1642574897, 310000053, 359843);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1355, 1355, to_date('30-05-2023', 'dd-mm-yyyy'), 155663756, 310000054, 359844);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1356, 1356, to_date('12-06-2023', 'dd-mm-yyyy'), 2494857483, 310000055, 359845);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1357, 1357, to_date('09-06-2023', 'dd-mm-yyyy'), 3463401023, 310000056, 359846);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1358, 1358, to_date('29-06-2023', 'dd-mm-yyyy'), 1688709964, 310000057, 359847);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1359, 1359, to_date('20-06-2023', 'dd-mm-yyyy'), 3781592932, 310000058, 360186);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1360, 1360, to_date('31-05-2023', 'dd-mm-yyyy'), 2498253907, 310000059, 360459);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1361, 1361, to_date('21-06-2023', 'dd-mm-yyyy'), 855321991, 310000060, 360889);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1362, 1362, to_date('09-06-2023', 'dd-mm-yyyy'), 1604649332, 310000061, 360991);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1363, 1363, to_date('07-06-2023', 'dd-mm-yyyy'), 3321500208, 310000062, 361814);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1364, 1364, to_date('25-06-2023', 'dd-mm-yyyy'), 468108540, 310000063, 362218);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1365, 1365, to_date('11-06-2023', 'dd-mm-yyyy'), 425783601, 310000064, 362585);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1366, 1366, to_date('18-06-2023', 'dd-mm-yyyy'), 1471488100, 310000065, 363782);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1367, 1367, to_date('25-06-2023', 'dd-mm-yyyy'), 1951815574, 310000066, 364232);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1368, 1368, to_date('19-06-2023', 'dd-mm-yyyy'), 2277859555, 310000067, 366610);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1369, 1369, to_date('17-06-2023', 'dd-mm-yyyy'), 3560536687, 310000068, 366837);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1370, 1370, to_date('21-06-2023', 'dd-mm-yyyy'), 3117624861, 310000069, 366935);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1371, 1371, to_date('20-06-2023', 'dd-mm-yyyy'), 3904415813, 310000070, 367307);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1372, 1372, to_date('09-06-2023', 'dd-mm-yyyy'), 2753157145, 310000071, 367909);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1373, 1373, to_date('15-06-2023', 'dd-mm-yyyy'), 3883784645, 310000072, 368749);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1374, 1374, to_date('29-06-2023', 'dd-mm-yyyy'), 3296988353, 310000073, 368758);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1375, 1375, to_date('29-06-2023', 'dd-mm-yyyy'), 1664409612, 310000074, 372197);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1376, 1376, to_date('06-06-2023', 'dd-mm-yyyy'), 4291952742, 310000075, 372315);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1377, 1377, to_date('16-06-2023', 'dd-mm-yyyy'), 1903082893, 310000076, 373297);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1378, 1378, to_date('25-06-2023', 'dd-mm-yyyy'), 1114723475, 310000077, 373619);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1379, 1379, to_date('31-05-2023', 'dd-mm-yyyy'), 752773406, 310000078, 373729);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1380, 1380, to_date('06-06-2023', 'dd-mm-yyyy'), 841567993, 310000079, 375014);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1381, 1381, to_date('05-06-2023', 'dd-mm-yyyy'), 1801185272, 234413401, 376626);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1382, 1382, to_date('19-06-2023', 'dd-mm-yyyy'), 2873700409, 214945813, 376900);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1383, 1383, to_date('13-06-2023', 'dd-mm-yyyy'), 1313078341, 332113182, 377628);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1384, 1384, to_date('15-06-2023', 'dd-mm-yyyy'), 2788966181, 207083715, 377698);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1385, 1385, to_date('28-06-2023', 'dd-mm-yyyy'), 2485263056, 386178461, 378711);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1386, 1386, to_date('24-06-2023', 'dd-mm-yyyy'), 2171424292, 217056502, 378885);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1387, 1387, to_date('12-06-2023', 'dd-mm-yyyy'), 3551736206, 281154307, 380512);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1388, 1388, to_date('31-05-2023', 'dd-mm-yyyy'), 622994605, 320345744, 380933);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1389, 1389, to_date('27-06-2023', 'dd-mm-yyyy'), 56045864, 325389215, 381067);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1390, 1390, to_date('23-06-2023', 'dd-mm-yyyy'), 499848229, 210470680, 381422);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1391, 1391, to_date('31-05-2023', 'dd-mm-yyyy'), 2146024878, 335673295, 382058);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1392, 1392, to_date('11-06-2023', 'dd-mm-yyyy'), 3613982088, 310266508, 383198);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1393, 1393, to_date('02-06-2023', 'dd-mm-yyyy'), 3996108394, 335012305, 383794);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1394, 1394, to_date('12-06-2023', 'dd-mm-yyyy'), 717220180, 272173133, 384407);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1395, 1395, to_date('23-06-2023', 'dd-mm-yyyy'), 3771158295, 355616367, 385754);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1396, 1396, to_date('07-06-2023', 'dd-mm-yyyy'), 2128813517, 363641567, 386163);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1397, 1397, to_date('16-06-2023', 'dd-mm-yyyy'), 681250929, 341750599, 386254);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1398, 1398, to_date('20-06-2023', 'dd-mm-yyyy'), 2256772699, 274810074, 386651);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1399, 1399, to_date('19-06-2023', 'dd-mm-yyyy'), 4184162999, 227710098, 386915);
-commit;
-prompt 400 records committed...
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1400, 1400, to_date('14-06-2023', 'dd-mm-yyyy'), 84919454, 362506458, 387007);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1401, 1401, to_date('27-06-2023', 'dd-mm-yyyy'), 3937385977, 209218853, 387418);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1402, 1402, to_date('09-06-2023', 'dd-mm-yyyy'), 3981901827, 374271549, 387567);
-insert into BOOKING (booking_id, journey_id, booking_date, passenger_id, seller_id, ticket_id)
-values (1403, 1403, to_date('10-06-2023', 'dd-mm-yyyy'), 2467349848, 381386109, 387947);
-commit;
-prompt 404 records loaded
 prompt Loading CREWMEMBERS...
 insert into CREWMEMBERS (crew_id, crew_name, crew_role)
 values (1, 'Alli Donnett', 'Flight Attendant');
@@ -12146,6 +11028,777 @@ insert into JOINEDPASSENGERS (passenger_id, passenger_name, passenger_phone, pas
 values (2467349848, 'Pleasence', '555282065', 'eddie.pleasence@pds.br', null, null);
 commit;
 prompt 1404 records loaded
+prompt Loading TICKETSELLER...
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (234413401, 'McDormand', '502995216');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (214945813, 'Raybon', '504217977');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (332113182, 'Viterelli', '517881279');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (207083715, 'Basinger', '9999999999');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (386178461, 'Moraz', '562206985');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (217056502, 'Blackmore', '534063610');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (281154307, 'Brody', '511433950');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (320345744, 'Badalucco', '504635700');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (325389215, 'Cazale', '583308100');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (210470680, 'Delta', '561836422');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (335673295, 'Eckhart', '572775384');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310266508, 'Atlas', '511892567');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (335012305, 'Berkeley', '507634336');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (272173133, 'Sewell', '506078218');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (355616367, 'Wiest', '588359326');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (363641567, 'Niven', '503288460');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (341750599, 'Ledger', '513311518');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (274810074, 'Tobolowsky', '518422580');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (227710098, 'Greenwood', '543103456');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (362506458, 'Carrere', '576060388');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (209218853, 'Lorenz', '583322531');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (374271549, 'O''Sullivan', '558846936');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (381386109, 'Holden', '566273793');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (380347031, 'Parm', '521885702');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (287359609, 'Palmieri', '587998168');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (277303119, 'Warden', '553903154');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (288367846, 'Williams', '589683539');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (316073442, 'Colon', '543613671');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (202318062, 'Coburn', '500838054');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (296490615, 'Sayer', '571207901');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (363888243, 'Griggs', '508362643');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (271851580, 'Hatosy', '520834931');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (378494685, 'Assante', '569067896');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (217461665, 'Llewelyn', '555974010');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (385006976, 'Furtado', '586354305');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (288385654, 'Hanks', '576320092');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (381994314, 'Maxwell', '562839311');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (220647788, 'Pony', '547864120');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (318996086, 'Gosdin', '522794688');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (378745713, 'Nicks', '587858717');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (382190490, 'Utada', '579478486');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (357450766, 'Faithfull', '518947833');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (382262708, 'Statham', '565932088');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (329333824, 'Doucette', '542529963');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (295623764, 'Lewis', '501689907');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (258157080, 'Mitchell', '526043625');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (237777658, 'Matthau', '525241792');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (304082692, 'Young', '502936096');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (343952758, 'Swinton', '541121435');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (226444135, 'Channing', '543226789');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (326478636, 'Chappelle', '564292914');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (295480431, 'Faithfull', '507430150');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (345176686, 'Bandy', '551196931');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (362822032, 'Cara', '532784627');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (205616776, 'Affleck', '569523402');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (313515270, 'Jovovich', '568868985');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (234848134, 'Ellis', '585622740');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (296854630, 'Head', '525400175');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (214515321, 'Quinlan', '582579532');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (211133927, 'Jackman', '508922969');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (371494810, 'Diehl', '521474230');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (255503675, 'Ferry', '502845676');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (295709145, 'Moffat', '576376078');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (372307406, 'Def', '557473577');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (227969024, 'McElhone', '548268675');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (252439705, 'Chung', '528967081');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (296933887, 'Coe', '577533448');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (356297958, 'Khan', '519130098');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (387943673, 'Marie', '566930700');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310663510, 'Warren', '517240812');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (236933452, 'Neville', '540348025');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (239220981, 'Capshaw', '551396760');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (274273432, 'Evett', '525056572');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (308281893, 'Bloch', '575684041');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (205554610, 'Avalon', '569951953');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (321495574, 'Baranski', '501521480');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (233439957, 'Palmer', '587383558');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (364781468, 'Flanery', '552399728');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (376097465, 'Swayze', '584818629');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (237277522, 'Stormare', '531557512');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (307799804, 'Crosby', '512870607');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (262644266, 'Hersh', '577537691');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (325390520, 'Badalucco', '511270153');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (259468455, 'Peet', '563669232');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (234853838, 'Tinsley', '512296629');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (246648879, 'Warden', '549952920');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (324559120, 'Broderick', '505142978');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (231394919, 'Dalton', '510213314');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (320256878, 'Klein', '572782577');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (270700908, 'Gibson', '589342427');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (280955985, 'Craven', '538268007');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (343751129, 'Macy', '575626551');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (218786324, 'Danger', '568143628');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (319536448, 'Branagh', '537141847');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (229222618, 'Jackman', '509921404');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (232899139, 'Sandler', '579651555');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (304988522, 'Charles', '526477679');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (300142382, 'Prowse', '571963061');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (236950311, 'Bancroft', '535902351');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (334120188, 'Visnjic', '513931615');
+commit;
+prompt 100 records committed...
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (292721604, 'Ruiz', '538896434');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (325237214, 'Caviezel', '527854086');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (297909520, 'Alexander', '550394009');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (350910955, 'Todd', '516505934');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (260313579, 'Clayton', '535805300');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (358656201, 'Zevon', '566162475');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (263316337, 'Wagner', '538263933');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (388918507, 'Ponty', '541236502');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (355554389, 'Burton', '539638382');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (329984528, 'Moody', '564283489');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (289104838, 'Gough', '577960194');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (280607651, 'Aiken', '561697874');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (252240713, 'Berkley', '585454790');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (353282291, 'Li', '557074279');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (234674022, 'Hopper', '527659443');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (274254467, 'Kretschmann', '551561079');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (237492254, 'Perez', '513302533');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (352245013, 'Green', '539215338');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (296078129, 'Coolidge', '559823195');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (228359755, 'Benoit', '586002921');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (346558251, 'De Almeida', '578756244');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (341643467, 'Conley', '569300466');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (264129045, 'McLachlan', '531818545');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (200076168, 'McNarland', '531171922');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (279332987, 'Fariq', '520534965');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (382386541, 'Adkins', '518936501');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (355379591, 'Yankovic', '522759611');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (233742748, 'Posener', '521242154');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (220299024, 'McBride', '506606288');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (225050898, 'Finney', '542634069');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (341456397, 'Orbit', '569225908');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (243120652, 'Wen', '565086216');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (261116928, 'Phillips', '562683048');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (224221194, 'Snow', '576770592');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (209711155, 'Stuermer', '535013939');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (358423787, 'Eastwood', '527098592');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (352580218, 'Womack', '509518858');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (213484577, 'Turner', '528406819');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (315658972, 'Hirsch', '532578236');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (256738120, 'O''Connor', '579200664');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (290154315, 'Cobbs', '567908726');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (298423242, 'Wopat', '587238122');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (365172580, 'Gatlin', '536318100');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (221923419, 'Humphrey', '533558597');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (234818209, 'Carnes', '562800982');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (352448787, 'Ellis', '576461799');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (221901164, 'Skaggs', '550366301');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (267591151, 'Hedaya', '538045388');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (228427626, 'Duncan', '540426802');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (367822102, 'Rossellini', '520841657');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (262882544, 'Cervine', '556035975');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (354252310, 'Vaughn', '508978282');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (250318415, 'Whitwam', '504853553');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (251702571, 'Purefoy', '582751099');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (382817463, 'Sinise', '566581976');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (219228918, 'Rollins', '558162844');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (319368928, 'Imbruglia', '512868214');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (364570311, 'Mazar', '519475977');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (214974740, 'Fishburne', '509432932');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (235422949, 'Weaver', '553774918');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (383240133, 'Roy Parnell', '588597127');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (345865205, 'Taylor', '547558474');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (334196039, 'Tate', '578550260');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (202536414, 'Flanery', '577111721');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (354012211, 'Bale', '571768324');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (279186496, 'Soda', '572463231');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (264968973, 'Bragg', '562070364');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (241836382, 'Forster', '549743338');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (316936386, 'Rains', '576022687');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (316896662, 'Chaplin', '524347004');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (375037348, 'Tankard', '542886314');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (223058663, 'Giannini', '568095849');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (226520741, 'Vincent', '506180186');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (251473344, 'Macht', '513213088');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (342517245, 'Bello', '532325209');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (279543919, 'Levert', '534997348');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (351668768, 'Banderas', '525867436');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (378453080, 'Hoffman', '529231743');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (231987717, 'Whitford', '579577495');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (265199943, 'Quaid', '580218107');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (359089400, 'Pollack', '519412843');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (293310565, 'Shaye', '516507902');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (382524856, 'Diddley', '582034494');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (234383859, 'McKean', '544536126');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (291697284, 'Patillo', '574415572');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (292117233, 'Farris', '501077381');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (348147944, 'Hudson', '574190379');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (273298003, 'Gallant', '514359327');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (286222029, 'Henstridge', '573894597');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (213322864, 'Basinger', '566412863');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (218646495, 'Foley', '585264857');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (338993209, 'Rush', '546435635');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (291745197, 'Osbourne', '519424073');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (295504003, 'Keener', '582220896');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (286256884, 'Popper', '528202799');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (239573283, 'Ford', '534682203');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (338383773, 'Salonga', '529161294');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (313422914, 'Caldwell', '514811152');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (201157338, 'Sledge', '515207082');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (316694395, 'White', '563665026');
+commit;
+prompt 200 records committed...
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (242838870, 'Summer', '557173475');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (332240843, 'Jane', '549819212');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (326250050, 'Kilmer', '577460875');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (208953132, 'Frakes', '585760195');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (345028424, 'Flanagan', '532969607');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (387229316, 'Cash', '550564102');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (259199134, 'Nicks', '589195632');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (342256992, 'Wheel', '531528043');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (357522613, 'Kirshner', '562643655');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (243823245, 'Mohr', '557821858');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (367193204, 'Moffat', '588761042');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (200771028, 'Graham', '545331433');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (297000767, 'Houston', '585535315');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (250359573, 'Garner', '549296350');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (257401303, 'Cherry', '541853174');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (209534435, 'Nicholson', '520729432');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (294448518, 'Spector', '522814613');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (353345218, 'Melvin', '579568621');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (313590950, 'Loggia', '504557084');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (237340794, 'McGriff', '562677631');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (308313920, 'Paquin', '536896582');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (282598062, 'Gooding', '553805996');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (316877033, 'Silverman', '546360118');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (315975743, 'Sheen', '516066348');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (242341315, 'Colin Young', '503092253');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (351104744, 'Vince', '531012202');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (236070328, 'El-Saher', '535792169');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (289405820, 'Thomas', '502627985');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (257301681, 'Darren', '517402244');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (271938993, 'Simpson', '585099757');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (340594367, 'Ricci', '543849143');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (284012229, 'Wolf', '560744758');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (353338208, 'Horizon', '506859160');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (282084259, 'Balk', '534565873');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (306439412, 'Teng', '572855871');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (328463277, 'Culkin', '565188084');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (247145869, 'Tomei', '541325086');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (360504390, 'Farrell', '504053125');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (263122301, 'Carlton', '500924728');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (349319230, 'Satriani', '546320847');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (235703717, 'Campbell', '588150391');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (215306111, 'Lunch', '513576136');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (317120894, 'Reilly', '524666208');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (295963344, 'Raye', '560793814');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (365778672, 'Bale', '543600125');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (292337047, 'Furay', '553695525');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (264751878, 'Tucci', '515307690');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (385952818, 'Latifah', '548267429');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (215919530, 'Kretschmann', '587454243');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (305063038, 'Steiger', '557420375');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (304960689, 'Webb', '505876673');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (369383417, 'Abraham', '541190265');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (315159983, 'Macht', '579687891');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (383068508, 'Caviezel', '512120463');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (379992281, 'McDonnell', '589604705');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (368361520, 'Archer', '537165348');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (380149339, 'De Almeida', '570638045');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (294023629, 'Connelly', '527229512');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (379411520, 'Solido', '512208262');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (385177335, 'Malone', '535935638');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (239929754, 'Sizemore', '558562705');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (221462028, 'Hanley', '516020695');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (260441923, 'Sherman', '523202845');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (370273040, 'Webb', '545519889');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (245078686, 'Stevenson', '530998935');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (358212799, 'McKellen', '522235670');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (325091518, 'Lizzy', '573906509');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (318599595, 'Ponce', '564530152');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (285435332, 'Chapman', '588825968');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (232830547, 'Driver', '584848373');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (232034549, 'Hector', '552289113');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (290455974, 'Harnes', '570202178');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (388129809, 'Paige', '524439644');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (253867252, 'Ronstadt', '586744822');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (308717810, 'Kahn', '577323514');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (300404573, 'Tyler', '564169946');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (215133805, 'Kapanka', '587944434');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (214329655, 'Aykroyd', '555600202');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (226660320, 'Witt', '577994966');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (255356533, 'Hingle', '570515595');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (337051483, 'Brody', '517769272');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (376165958, 'Pressly', '557734449');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (220415119, 'Chapman', '564624975');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (360420742, 'Avalon', '503125988');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (227369348, 'Balk', '504613493');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (352125561, 'Redgrave', '518227605');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (388161917, 'Colon', '502665850');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (368610255, 'Moriarty', '561887176');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (318883867, 'Santa Rosa', '580129074');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (359835609, 'Alston', '503076196');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (309399354, 'Sorvino', '521622221');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (277999888, 'Hagerty', '589747986');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (311525561, 'Jeffreys', '524245461');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (350438065, 'Garfunkel', '581671869');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (312705624, 'Janney', '504255737');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (377428731, 'Farris', '535184021');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (218298341, 'Diesel', '517543237');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (351631101, 'Domino', '580383536');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (264036200, 'Hatosy', '553729244');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (299341333, 'Morse', '587093284');
+commit;
+prompt 300 records committed...
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (233552819, 'Cotton', '537582848');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000000, 'Harroll', '406-630-9267');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000001, 'Aronin', '864-698-0298');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000002, 'Steart', '506-436-1165');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000003, 'Coombe', '375-674-7228');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000004, 'Pechard', '764-189-9195');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000005, 'Klaus', '243-280-8377');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000006, 'Shimuk', '543-105-5266');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000007, 'Gillease', '718-946-6544');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000008, 'Shovell', '412-230-7757');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000009, 'Eyckelberg', '864-574-6537');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000010, 'Ayrton', '546-996-6928');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000011, 'Merrett', '764-592-5544');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000012, 'Simenet', '647-972-1985');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000013, 'Caldayrou', '655-262-1684');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000014, 'Merrien', '441-196-2975');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000015, 'Withull', '486-438-5296');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000016, 'Cuming', '347-327-7630');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000017, 'Boyen', '575-652-9196');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000018, 'Humphries', '560-459-3050');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000019, 'Croote', '611-717-2067');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000020, 'Keir', '467-321-4580');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000021, 'Adger', '972-454-4639');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000022, 'Kuhlen', '836-864-4021');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000023, 'Matthewman', '771-621-5830');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000024, 'Linkleter', '961-437-7195');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000025, 'Healy', '146-814-6482');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000026, 'Fearick', '467-455-9626');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000027, 'Schindler', '800-886-5931');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000028, 'Masurel', '590-698-8996');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000029, 'Gouldeby', '992-311-0329');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000030, 'Humpatch', '128-334-0805');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000031, 'Thorold', '716-520-9281');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000032, 'Kobierski', '542-467-5556');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000033, 'Molder', '955-408-7114');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000034, 'Nelle', '163-508-0928');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000035, 'Lafuente', '678-505-7660');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000036, 'Withey', '950-138-5509');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000037, 'Birrane', '635-118-9645');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000038, 'Cadwell', '303-543-6179');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000039, 'Aguilar', '803-503-7682');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000040, 'Larkin', '576-855-3144');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000041, 'Houndsom', '254-193-8124');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000042, 'Laba', '324-585-7375');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000043, 'De la Harpe', '934-411-5610');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000044, 'Nowak', '789-597-0425');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000045, 'Van Castele', '203-340-6676');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000046, 'Luckin', '341-175-1947');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000047, 'Masi', '364-550-9120');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000048, 'Ludwell', '662-772-8615');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000049, 'Eyles', '975-557-2885');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000050, 'Banck', '159-449-2337');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000051, 'Bannon', '436-291-9494');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000052, 'Sidwell', '562-311-8258');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000053, 'Taree', '182-438-5587');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000054, 'Patroni', '391-732-2749');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000055, 'Leele', '495-181-4795');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000056, 'Shiliton', '562-294-1343');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000057, 'Flucks', '634-917-7526');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000058, 'Blackborn', '623-400-3758');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000059, 'Litster', '639-418-1472');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000060, 'Hatt', '214-145-3882');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000061, 'Sorrell', '212-283-6524');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000062, 'Gartsyde', '285-239-5952');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000063, 'Freebury', '196-558-7755');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000064, 'Hunnicutt', '820-172-4966');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000065, 'Sheavills', '187-612-0291');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000066, 'Feragh', '614-648-9214');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000067, 'Eager', '430-116-3100');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000068, 'Haggish', '213-479-0026');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000069, 'Armitage', '320-272-5537');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000070, 'Whorall', '574-797-0022');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000071, 'Grewer', '212-880-4357');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000072, 'Manston', '168-395-3533');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000073, 'Harnetty', '582-599-9058');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000074, 'Ringer', '199-226-9217');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000075, 'Exposito', '929-788-9735');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000076, 'Goulborn', '534-197-4045');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000077, 'Turfes', '815-661-7297');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000078, 'Maharry', '376-447-4690');
+insert into TICKETSELLER (seller_id, seller_name, seller_contact)
+values (310000079, 'Spirritt', '394-463-6734');
+commit;
+prompt 381 records loaded
 prompt Loading JOINEDBOOKING...
 insert into JOINEDBOOKING (booking_id, passenger_id, flight_id, seat_number, booking_date, journey_id, seller_id, ticket_id)
 values (1, 68, 662, '990-Q', to_date('07-04-2024 00:26:29', 'dd-mm-yyyy hh24:mi:ss'), null, null, null);
@@ -17005,6 +16658,773 @@ insert into JOINEDBOOKING (booking_id, passenger_id, flight_id, seat_number, boo
 values (2404, 2467349848, null, null, to_date('10-06-2023', 'dd-mm-yyyy'), 1403, 381386109, 387947);
 commit;
 prompt 2404 records loaded
+prompt Loading PAYMENT_REPORT...
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1000, to_date('07-07-2023', 'dd-mm-yyyy'), 1000);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1001, to_date('22-07-2023', 'dd-mm-yyyy'), 1001);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1002, to_date('06-07-2023', 'dd-mm-yyyy'), 1002);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1003, to_date('11-07-2023', 'dd-mm-yyyy'), 1003);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1004, to_date('02-07-2023', 'dd-mm-yyyy'), 1004);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1005, to_date('06-07-2023', 'dd-mm-yyyy'), 1005);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1006, to_date('02-07-2023', 'dd-mm-yyyy'), 1006);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1007, to_date('15-07-2023', 'dd-mm-yyyy'), 1007);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1008, to_date('22-07-2023', 'dd-mm-yyyy'), 1008);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1009, to_date('17-07-2023', 'dd-mm-yyyy'), 1009);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1010, to_date('28-07-2023', 'dd-mm-yyyy'), 1010);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1012, to_date('06-07-2023', 'dd-mm-yyyy'), 1012);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1013, to_date('10-07-2023', 'dd-mm-yyyy'), 1013);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1014, to_date('26-07-2023', 'dd-mm-yyyy'), 1014);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1015, to_date('24-07-2023', 'dd-mm-yyyy'), 1015);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1016, to_date('21-07-2023', 'dd-mm-yyyy'), 1016);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1017, to_date('27-07-2023', 'dd-mm-yyyy'), 1017);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1018, to_date('05-07-2023', 'dd-mm-yyyy'), 1018);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1019, to_date('24-07-2023', 'dd-mm-yyyy'), 1019);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1020, to_date('15-07-2023', 'dd-mm-yyyy'), 1020);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1021, to_date('03-07-2023', 'dd-mm-yyyy'), 1021);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1022, to_date('05-07-2023', 'dd-mm-yyyy'), 1022);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1023, to_date('06-07-2023', 'dd-mm-yyyy'), 1023);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1024, to_date('18-07-2023', 'dd-mm-yyyy'), 1024);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1025, to_date('18-07-2023', 'dd-mm-yyyy'), 1025);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1026, to_date('29-07-2023', 'dd-mm-yyyy'), 1026);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1027, to_date('06-07-2023', 'dd-mm-yyyy'), 1027);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1028, to_date('29-07-2023', 'dd-mm-yyyy'), 1028);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1029, to_date('23-07-2023', 'dd-mm-yyyy'), 1029);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1030, to_date('09-07-2023', 'dd-mm-yyyy'), 1030);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1031, to_date('21-07-2023', 'dd-mm-yyyy'), 1031);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1032, to_date('23-07-2023', 'dd-mm-yyyy'), 1032);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1033, to_date('13-07-2023', 'dd-mm-yyyy'), 1033);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1034, to_date('17-07-2023', 'dd-mm-yyyy'), 1034);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1035, to_date('29-07-2023', 'dd-mm-yyyy'), 1035);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1036, to_date('15-07-2023', 'dd-mm-yyyy'), 1036);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1037, to_date('07-07-2023', 'dd-mm-yyyy'), 1037);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1038, to_date('23-07-2023', 'dd-mm-yyyy'), 1038);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1041, to_date('24-07-2023', 'dd-mm-yyyy'), 1041);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1042, to_date('24-07-2023', 'dd-mm-yyyy'), 1042);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1043, to_date('07-07-2023', 'dd-mm-yyyy'), 1043);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1044, to_date('22-07-2023', 'dd-mm-yyyy'), 1044);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1045, to_date('26-07-2023', 'dd-mm-yyyy'), 1045);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1046, to_date('06-07-2023', 'dd-mm-yyyy'), 1046);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1047, to_date('28-07-2023', 'dd-mm-yyyy'), 1047);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1048, to_date('21-07-2023', 'dd-mm-yyyy'), 1048);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1049, to_date('28-07-2023', 'dd-mm-yyyy'), 1049);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1050, to_date('24-07-2023', 'dd-mm-yyyy'), 1050);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1051, to_date('20-07-2023', 'dd-mm-yyyy'), 1051);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1052, to_date('18-07-2023', 'dd-mm-yyyy'), 1052);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1053, to_date('11-07-2023', 'dd-mm-yyyy'), 1053);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1054, to_date('27-07-2023', 'dd-mm-yyyy'), 1054);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1056, to_date('06-07-2023', 'dd-mm-yyyy'), 1056);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1057, to_date('28-07-2023', 'dd-mm-yyyy'), 1057);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1058, to_date('22-07-2023', 'dd-mm-yyyy'), 1058);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1059, to_date('26-07-2023', 'dd-mm-yyyy'), 1059);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1060, to_date('16-07-2023', 'dd-mm-yyyy'), 1060);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1061, to_date('05-07-2023', 'dd-mm-yyyy'), 1061);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1062, to_date('22-07-2023', 'dd-mm-yyyy'), 1062);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1063, to_date('14-07-2023', 'dd-mm-yyyy'), 1063);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1064, to_date('19-07-2023', 'dd-mm-yyyy'), 1064);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1065, to_date('23-07-2023', 'dd-mm-yyyy'), 1065);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1066, to_date('18-07-2023', 'dd-mm-yyyy'), 1066);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1067, to_date('08-07-2023', 'dd-mm-yyyy'), 1067);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1068, to_date('23-07-2023', 'dd-mm-yyyy'), 1068);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1070, to_date('15-07-2023', 'dd-mm-yyyy'), 1070);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1071, to_date('13-07-2023', 'dd-mm-yyyy'), 1071);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1072, to_date('04-07-2023', 'dd-mm-yyyy'), 1072);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1073, to_date('02-07-2023', 'dd-mm-yyyy'), 1073);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1074, to_date('16-07-2023', 'dd-mm-yyyy'), 1074);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1075, to_date('08-07-2023', 'dd-mm-yyyy'), 1075);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1076, to_date('02-07-2023', 'dd-mm-yyyy'), 1076);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1077, to_date('23-07-2023', 'dd-mm-yyyy'), 1077);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1078, to_date('21-07-2023', 'dd-mm-yyyy'), 1078);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1079, to_date('24-07-2023', 'dd-mm-yyyy'), 1079);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1080, to_date('09-07-2023', 'dd-mm-yyyy'), 1080);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1081, to_date('28-07-2023', 'dd-mm-yyyy'), 1081);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1082, to_date('19-07-2023', 'dd-mm-yyyy'), 1082);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1083, to_date('12-07-2023', 'dd-mm-yyyy'), 1083);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1084, to_date('19-07-2023', 'dd-mm-yyyy'), 1084);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1086, to_date('20-07-2023', 'dd-mm-yyyy'), 1086);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1087, to_date('08-07-2023', 'dd-mm-yyyy'), 1087);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1088, to_date('26-07-2023', 'dd-mm-yyyy'), 1088);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1089, to_date('08-07-2023', 'dd-mm-yyyy'), 1089);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1090, to_date('11-07-2023', 'dd-mm-yyyy'), 1090);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1091, to_date('13-07-2023', 'dd-mm-yyyy'), 1091);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1092, to_date('08-07-2023', 'dd-mm-yyyy'), 1092);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1093, to_date('17-07-2023', 'dd-mm-yyyy'), 1093);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1094, to_date('22-07-2023', 'dd-mm-yyyy'), 1094);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1095, to_date('06-07-2023', 'dd-mm-yyyy'), 1095);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1096, to_date('28-07-2023', 'dd-mm-yyyy'), 1096);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1097, to_date('02-07-2023', 'dd-mm-yyyy'), 1097);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1098, to_date('09-07-2023', 'dd-mm-yyyy'), 1098);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1099, to_date('24-07-2023', 'dd-mm-yyyy'), 1099);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1100, to_date('20-07-2023', 'dd-mm-yyyy'), 1100);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1102, to_date('13-07-2023', 'dd-mm-yyyy'), 1102);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1103, to_date('19-07-2023', 'dd-mm-yyyy'), 1103);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1104, to_date('09-07-2023', 'dd-mm-yyyy'), 1104);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1105, to_date('19-07-2023', 'dd-mm-yyyy'), 1105);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1106, to_date('18-07-2023', 'dd-mm-yyyy'), 1106);
+commit;
+prompt 100 records committed...
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1107, to_date('07-07-2023', 'dd-mm-yyyy'), 1107);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1108, to_date('23-07-2023', 'dd-mm-yyyy'), 1108);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1109, to_date('07-07-2023', 'dd-mm-yyyy'), 1109);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1110, to_date('09-07-2023', 'dd-mm-yyyy'), 1110);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1111, to_date('22-07-2023', 'dd-mm-yyyy'), 1111);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1112, to_date('12-07-2023', 'dd-mm-yyyy'), 1112);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1113, to_date('23-07-2023', 'dd-mm-yyyy'), 1113);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1114, to_date('09-07-2023', 'dd-mm-yyyy'), 1114);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1115, to_date('19-07-2023', 'dd-mm-yyyy'), 1115);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1116, to_date('04-07-2023', 'dd-mm-yyyy'), 1116);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1117, to_date('14-07-2023', 'dd-mm-yyyy'), 1117);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1118, to_date('15-07-2023', 'dd-mm-yyyy'), 1118);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1119, to_date('04-07-2023', 'dd-mm-yyyy'), 1119);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1120, to_date('28-07-2023', 'dd-mm-yyyy'), 1120);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1121, to_date('28-07-2023', 'dd-mm-yyyy'), 1121);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1122, to_date('28-07-2023', 'dd-mm-yyyy'), 1122);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1123, to_date('23-07-2023', 'dd-mm-yyyy'), 1123);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1124, to_date('14-07-2023', 'dd-mm-yyyy'), 1124);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1126, to_date('07-07-2023', 'dd-mm-yyyy'), 1126);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1127, to_date('03-07-2023', 'dd-mm-yyyy'), 1127);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1128, to_date('08-07-2023', 'dd-mm-yyyy'), 1128);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1130, to_date('15-07-2023', 'dd-mm-yyyy'), 1130);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1131, to_date('07-07-2023', 'dd-mm-yyyy'), 1131);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1132, to_date('22-07-2023', 'dd-mm-yyyy'), 1132);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1133, to_date('06-07-2023', 'dd-mm-yyyy'), 1133);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1134, to_date('10-07-2023', 'dd-mm-yyyy'), 1134);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1135, to_date('09-07-2023', 'dd-mm-yyyy'), 1135);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1136, to_date('08-07-2023', 'dd-mm-yyyy'), 1136);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1137, to_date('05-07-2023', 'dd-mm-yyyy'), 1137);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1138, to_date('21-07-2023', 'dd-mm-yyyy'), 1138);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1139, to_date('27-07-2023', 'dd-mm-yyyy'), 1139);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1140, to_date('15-07-2023', 'dd-mm-yyyy'), 1140);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1141, to_date('19-07-2023', 'dd-mm-yyyy'), 1141);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1142, to_date('27-07-2023', 'dd-mm-yyyy'), 1142);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1143, to_date('27-07-2023', 'dd-mm-yyyy'), 1143);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1145, to_date('11-07-2023', 'dd-mm-yyyy'), 1145);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1146, to_date('17-07-2023', 'dd-mm-yyyy'), 1146);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1147, to_date('19-07-2023', 'dd-mm-yyyy'), 1147);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1148, to_date('23-07-2023', 'dd-mm-yyyy'), 1148);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1149, to_date('11-07-2023', 'dd-mm-yyyy'), 1149);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1150, to_date('29-07-2023', 'dd-mm-yyyy'), 1150);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1151, to_date('11-07-2023', 'dd-mm-yyyy'), 1151);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1152, to_date('18-07-2023', 'dd-mm-yyyy'), 1152);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1153, to_date('13-07-2023', 'dd-mm-yyyy'), 1153);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1154, to_date('25-07-2023', 'dd-mm-yyyy'), 1154);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1155, to_date('26-07-2023', 'dd-mm-yyyy'), 1155);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1156, to_date('13-07-2023', 'dd-mm-yyyy'), 1156);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1157, to_date('08-07-2023', 'dd-mm-yyyy'), 1157);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1158, to_date('10-07-2023', 'dd-mm-yyyy'), 1158);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1159, to_date('09-07-2023', 'dd-mm-yyyy'), 1159);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1160, to_date('02-07-2023', 'dd-mm-yyyy'), 1160);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1161, to_date('05-07-2023', 'dd-mm-yyyy'), 1161);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1162, to_date('21-07-2023', 'dd-mm-yyyy'), 1162);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1163, to_date('11-07-2023', 'dd-mm-yyyy'), 1163);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1164, to_date('02-07-2023', 'dd-mm-yyyy'), 1164);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1165, to_date('13-07-2023', 'dd-mm-yyyy'), 1165);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1166, to_date('17-07-2023', 'dd-mm-yyyy'), 1166);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1167, to_date('29-07-2023', 'dd-mm-yyyy'), 1167);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1168, to_date('10-07-2023', 'dd-mm-yyyy'), 1168);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1169, to_date('24-07-2023', 'dd-mm-yyyy'), 1169);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1170, to_date('26-07-2023', 'dd-mm-yyyy'), 1170);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1171, to_date('02-07-2023', 'dd-mm-yyyy'), 1171);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1172, to_date('22-07-2023', 'dd-mm-yyyy'), 1172);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1173, to_date('21-07-2023', 'dd-mm-yyyy'), 1173);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1174, to_date('08-07-2023', 'dd-mm-yyyy'), 1174);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1175, to_date('02-07-2023', 'dd-mm-yyyy'), 1175);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1176, to_date('29-07-2023', 'dd-mm-yyyy'), 1176);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1177, to_date('02-07-2023', 'dd-mm-yyyy'), 1177);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1178, to_date('10-07-2023', 'dd-mm-yyyy'), 1178);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1179, to_date('13-07-2023', 'dd-mm-yyyy'), 1179);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1180, to_date('11-07-2023', 'dd-mm-yyyy'), 1180);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1181, to_date('11-07-2023', 'dd-mm-yyyy'), 1181);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1182, to_date('19-07-2023', 'dd-mm-yyyy'), 1182);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1183, to_date('29-07-2023', 'dd-mm-yyyy'), 1183);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1184, to_date('09-07-2023', 'dd-mm-yyyy'), 1184);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1185, to_date('09-07-2023', 'dd-mm-yyyy'), 1185);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1186, to_date('23-07-2023', 'dd-mm-yyyy'), 1186);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1187, to_date('13-07-2023', 'dd-mm-yyyy'), 1187);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1188, to_date('29-07-2023', 'dd-mm-yyyy'), 1188);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1189, to_date('04-07-2023', 'dd-mm-yyyy'), 1189);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1190, to_date('21-07-2023', 'dd-mm-yyyy'), 1190);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1191, to_date('13-07-2023', 'dd-mm-yyyy'), 1191);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1192, to_date('11-07-2023', 'dd-mm-yyyy'), 1192);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1193, to_date('26-07-2023', 'dd-mm-yyyy'), 1193);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1195, to_date('06-07-2023', 'dd-mm-yyyy'), 1195);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1197, to_date('07-07-2023', 'dd-mm-yyyy'), 1197);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1198, to_date('24-07-2023', 'dd-mm-yyyy'), 1198);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1199, to_date('15-07-2023', 'dd-mm-yyyy'), 1199);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1200, to_date('22-07-2023', 'dd-mm-yyyy'), 1200);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1201, to_date('19-07-2023', 'dd-mm-yyyy'), 1201);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1202, to_date('12-07-2023', 'dd-mm-yyyy'), 1202);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1203, to_date('11-07-2023', 'dd-mm-yyyy'), 1203);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1204, to_date('09-07-2023', 'dd-mm-yyyy'), 1204);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1205, to_date('19-07-2023', 'dd-mm-yyyy'), 1205);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1206, to_date('02-07-2023', 'dd-mm-yyyy'), 1206);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1207, to_date('11-07-2023', 'dd-mm-yyyy'), 1207);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1208, to_date('19-07-2023', 'dd-mm-yyyy'), 1208);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1209, to_date('29-07-2023', 'dd-mm-yyyy'), 1209);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1210, to_date('14-07-2023', 'dd-mm-yyyy'), 1210);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1211, to_date('14-07-2023', 'dd-mm-yyyy'), 1211);
+commit;
+prompt 200 records committed...
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1212, to_date('04-07-2023', 'dd-mm-yyyy'), 1212);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1213, to_date('11-07-2023', 'dd-mm-yyyy'), 1213);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1214, to_date('05-07-2023', 'dd-mm-yyyy'), 1214);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1215, to_date('13-07-2023', 'dd-mm-yyyy'), 1215);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1216, to_date('16-07-2023', 'dd-mm-yyyy'), 1216);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1217, to_date('07-07-2023', 'dd-mm-yyyy'), 1217);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1218, to_date('12-07-2023', 'dd-mm-yyyy'), 1218);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1219, to_date('29-07-2023', 'dd-mm-yyyy'), 1219);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1220, to_date('09-07-2023', 'dd-mm-yyyy'), 1220);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1221, to_date('15-07-2023', 'dd-mm-yyyy'), 1221);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1222, to_date('09-07-2023', 'dd-mm-yyyy'), 1222);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1223, to_date('06-07-2023', 'dd-mm-yyyy'), 1223);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1224, to_date('14-07-2023', 'dd-mm-yyyy'), 1224);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1225, to_date('10-07-2023', 'dd-mm-yyyy'), 1225);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1226, to_date('28-07-2023', 'dd-mm-yyyy'), 1226);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1227, to_date('05-07-2023', 'dd-mm-yyyy'), 1227);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1228, to_date('07-07-2023', 'dd-mm-yyyy'), 1228);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1229, to_date('15-07-2023', 'dd-mm-yyyy'), 1229);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1230, to_date('26-07-2023', 'dd-mm-yyyy'), 1230);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1231, to_date('12-07-2023', 'dd-mm-yyyy'), 1231);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1232, to_date('11-07-2023', 'dd-mm-yyyy'), 1232);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1233, to_date('28-07-2023', 'dd-mm-yyyy'), 1233);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1234, to_date('05-07-2023', 'dd-mm-yyyy'), 1234);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1235, to_date('04-07-2023', 'dd-mm-yyyy'), 1235);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1236, to_date('22-07-2023', 'dd-mm-yyyy'), 1236);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1237, to_date('22-07-2023', 'dd-mm-yyyy'), 1237);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1238, to_date('09-07-2023', 'dd-mm-yyyy'), 1238);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1239, to_date('23-07-2023', 'dd-mm-yyyy'), 1239);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1240, to_date('04-07-2023', 'dd-mm-yyyy'), 1240);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1241, to_date('19-07-2023', 'dd-mm-yyyy'), 1241);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1243, to_date('16-07-2023', 'dd-mm-yyyy'), 1243);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1244, to_date('18-07-2023', 'dd-mm-yyyy'), 1244);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1245, to_date('09-07-2023', 'dd-mm-yyyy'), 1245);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1246, to_date('11-07-2023', 'dd-mm-yyyy'), 1246);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1247, to_date('24-07-2023', 'dd-mm-yyyy'), 1247);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1248, to_date('10-07-2023', 'dd-mm-yyyy'), 1248);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1249, to_date('11-07-2023', 'dd-mm-yyyy'), 1249);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1250, to_date('29-07-2023', 'dd-mm-yyyy'), 1250);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1251, to_date('25-07-2023', 'dd-mm-yyyy'), 1251);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1252, to_date('07-07-2023', 'dd-mm-yyyy'), 1252);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1253, to_date('23-07-2023', 'dd-mm-yyyy'), 1253);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1254, to_date('17-07-2023', 'dd-mm-yyyy'), 1254);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1255, to_date('28-07-2023', 'dd-mm-yyyy'), 1255);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1256, to_date('12-07-2023', 'dd-mm-yyyy'), 1256);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1257, to_date('28-07-2023', 'dd-mm-yyyy'), 1257);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1258, to_date('12-07-2023', 'dd-mm-yyyy'), 1258);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1259, to_date('26-07-2023', 'dd-mm-yyyy'), 1259);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1260, to_date('23-07-2023', 'dd-mm-yyyy'), 1260);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1261, to_date('03-07-2023', 'dd-mm-yyyy'), 1261);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1262, to_date('28-07-2023', 'dd-mm-yyyy'), 1262);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1263, to_date('06-07-2023', 'dd-mm-yyyy'), 1263);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1265, to_date('16-07-2023', 'dd-mm-yyyy'), 1265);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1266, to_date('20-07-2023', 'dd-mm-yyyy'), 1266);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1267, to_date('26-07-2023', 'dd-mm-yyyy'), 1267);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1268, to_date('15-07-2023', 'dd-mm-yyyy'), 1268);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1269, to_date('05-07-2023', 'dd-mm-yyyy'), 1269);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1270, to_date('24-07-2023', 'dd-mm-yyyy'), 1270);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1272, to_date('06-07-2023', 'dd-mm-yyyy'), 1272);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1273, to_date('19-07-2023', 'dd-mm-yyyy'), 1273);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1274, to_date('17-07-2023', 'dd-mm-yyyy'), 1274);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1275, to_date('10-07-2023', 'dd-mm-yyyy'), 1275);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1276, to_date('24-07-2023', 'dd-mm-yyyy'), 1276);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1277, to_date('22-07-2023', 'dd-mm-yyyy'), 1277);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1278, to_date('27-07-2023', 'dd-mm-yyyy'), 1278);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1279, to_date('27-07-2023', 'dd-mm-yyyy'), 1279);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1280, to_date('04-07-2023', 'dd-mm-yyyy'), 1280);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1281, to_date('08-07-2023', 'dd-mm-yyyy'), 1281);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1283, to_date('12-07-2023', 'dd-mm-yyyy'), 1283);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1284, to_date('24-07-2023', 'dd-mm-yyyy'), 1284);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1285, to_date('09-07-2023', 'dd-mm-yyyy'), 1285);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1286, to_date('20-07-2023', 'dd-mm-yyyy'), 1286);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1287, to_date('12-07-2023', 'dd-mm-yyyy'), 1287);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1288, to_date('07-07-2023', 'dd-mm-yyyy'), 1288);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1289, to_date('07-07-2023', 'dd-mm-yyyy'), 1289);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1290, to_date('29-07-2023', 'dd-mm-yyyy'), 1290);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1291, to_date('11-07-2023', 'dd-mm-yyyy'), 1291);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1292, to_date('10-07-2023', 'dd-mm-yyyy'), 1292);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1293, to_date('29-07-2023', 'dd-mm-yyyy'), 1293);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1294, to_date('17-07-2023', 'dd-mm-yyyy'), 1294);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1295, to_date('20-07-2023', 'dd-mm-yyyy'), 1295);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1296, to_date('05-07-2023', 'dd-mm-yyyy'), 1296);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1297, to_date('08-07-2023', 'dd-mm-yyyy'), 1297);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1298, to_date('07-07-2023', 'dd-mm-yyyy'), 1298);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1299, to_date('25-07-2023', 'dd-mm-yyyy'), 1299);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1300, to_date('11-07-2023', 'dd-mm-yyyy'), 1300);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1301, to_date('26-07-2023', 'dd-mm-yyyy'), 1301);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1302, to_date('15-07-2023', 'dd-mm-yyyy'), 1302);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1303, to_date('28-07-2023', 'dd-mm-yyyy'), 1303);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1304, to_date('03-07-2023', 'dd-mm-yyyy'), 1304);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1305, to_date('16-07-2023', 'dd-mm-yyyy'), 1305);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1306, to_date('05-07-2023', 'dd-mm-yyyy'), 1306);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1308, to_date('16-07-2023', 'dd-mm-yyyy'), 1308);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1309, to_date('09-07-2023', 'dd-mm-yyyy'), 1309);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1310, to_date('16-07-2023', 'dd-mm-yyyy'), 1310);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1311, to_date('17-07-2023', 'dd-mm-yyyy'), 1311);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1312, to_date('02-07-2023', 'dd-mm-yyyy'), 1312);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1313, to_date('24-07-2023', 'dd-mm-yyyy'), 1313);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1314, to_date('07-07-2023', 'dd-mm-yyyy'), 1314);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1315, to_date('20-07-2023', 'dd-mm-yyyy'), 1315);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1316, to_date('10-07-2023', 'dd-mm-yyyy'), 1316);
+commit;
+prompt 300 records committed...
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1317, to_date('13-07-2023', 'dd-mm-yyyy'), 1317);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1318, to_date('19-07-2023', 'dd-mm-yyyy'), 1318);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1319, to_date('22-07-2023', 'dd-mm-yyyy'), 1319);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1321, to_date('07-07-2023', 'dd-mm-yyyy'), 1321);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1322, to_date('17-07-2023', 'dd-mm-yyyy'), 1322);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1323, to_date('11-07-2023', 'dd-mm-yyyy'), 1323);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1324, to_date('06-07-2023', 'dd-mm-yyyy'), 1324);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1325, to_date('19-07-2023', 'dd-mm-yyyy'), 1325);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1326, to_date('20-07-2023', 'dd-mm-yyyy'), 1326);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1327, to_date('06-07-2023', 'dd-mm-yyyy'), 1327);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1328, to_date('21-07-2023', 'dd-mm-yyyy'), 1328);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1329, to_date('05-07-2023', 'dd-mm-yyyy'), 1329);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1330, to_date('19-07-2023', 'dd-mm-yyyy'), 1330);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1331, to_date('10-07-2023', 'dd-mm-yyyy'), 1331);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1332, to_date('11-07-2023', 'dd-mm-yyyy'), 1332);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1333, to_date('25-07-2023', 'dd-mm-yyyy'), 1333);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1334, to_date('28-07-2023', 'dd-mm-yyyy'), 1334);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1335, to_date('21-07-2023', 'dd-mm-yyyy'), 1335);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1336, to_date('13-07-2023', 'dd-mm-yyyy'), 1336);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1337, to_date('25-07-2023', 'dd-mm-yyyy'), 1337);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1338, to_date('08-07-2023', 'dd-mm-yyyy'), 1338);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1339, to_date('17-07-2023', 'dd-mm-yyyy'), 1339);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1340, to_date('12-07-2023', 'dd-mm-yyyy'), 1340);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1341, to_date('08-07-2023', 'dd-mm-yyyy'), 1341);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1342, to_date('09-07-2023', 'dd-mm-yyyy'), 1342);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1343, to_date('10-07-2023', 'dd-mm-yyyy'), 1343);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1344, to_date('06-07-2023', 'dd-mm-yyyy'), 1344);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1345, to_date('28-07-2023', 'dd-mm-yyyy'), 1345);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1346, to_date('17-07-2023', 'dd-mm-yyyy'), 1346);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1347, to_date('19-07-2023', 'dd-mm-yyyy'), 1347);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1348, to_date('25-07-2023', 'dd-mm-yyyy'), 1348);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1351, to_date('21-07-2023', 'dd-mm-yyyy'), 1351);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1352, to_date('09-07-2023', 'dd-mm-yyyy'), 1352);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1353, to_date('27-07-2023', 'dd-mm-yyyy'), 1353);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1354, to_date('28-07-2023', 'dd-mm-yyyy'), 1354);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1355, to_date('28-07-2023', 'dd-mm-yyyy'), 1355);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1356, to_date('15-07-2023', 'dd-mm-yyyy'), 1356);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1357, to_date('25-07-2023', 'dd-mm-yyyy'), 1357);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1358, to_date('04-07-2023', 'dd-mm-yyyy'), 1358);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1360, to_date('02-07-2023', 'dd-mm-yyyy'), 1360);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1361, to_date('15-07-2023', 'dd-mm-yyyy'), 1361);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1362, to_date('18-07-2023', 'dd-mm-yyyy'), 1362);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1363, to_date('05-07-2023', 'dd-mm-yyyy'), 1363);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1364, to_date('24-07-2023', 'dd-mm-yyyy'), 1364);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1365, to_date('22-07-2023', 'dd-mm-yyyy'), 1365);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1366, to_date('02-07-2023', 'dd-mm-yyyy'), 1366);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1367, to_date('14-07-2023', 'dd-mm-yyyy'), 1367);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1368, to_date('16-07-2023', 'dd-mm-yyyy'), 1368);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1369, to_date('28-07-2023', 'dd-mm-yyyy'), 1369);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1370, to_date('09-07-2023', 'dd-mm-yyyy'), 1370);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1371, to_date('22-07-2023', 'dd-mm-yyyy'), 1371);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1372, to_date('28-07-2023', 'dd-mm-yyyy'), 1372);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1373, to_date('23-07-2023', 'dd-mm-yyyy'), 1373);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1374, to_date('29-07-2023', 'dd-mm-yyyy'), 1374);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1375, to_date('03-07-2023', 'dd-mm-yyyy'), 1375);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1378, to_date('08-07-2023', 'dd-mm-yyyy'), 1378);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1379, to_date('10-07-2023', 'dd-mm-yyyy'), 1379);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1380, to_date('25-07-2023', 'dd-mm-yyyy'), 1380);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1381, to_date('11-07-2023', 'dd-mm-yyyy'), 1381);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1382, to_date('14-07-2023', 'dd-mm-yyyy'), 1382);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1383, to_date('05-07-2023', 'dd-mm-yyyy'), 1383);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1385, to_date('14-07-2023', 'dd-mm-yyyy'), 1385);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1386, to_date('28-07-2023', 'dd-mm-yyyy'), 1386);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1387, to_date('15-07-2023', 'dd-mm-yyyy'), 1387);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1389, to_date('16-07-2023', 'dd-mm-yyyy'), 1389);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1390, to_date('26-07-2023', 'dd-mm-yyyy'), 1390);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1391, to_date('26-07-2023', 'dd-mm-yyyy'), 1391);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1392, to_date('28-07-2023', 'dd-mm-yyyy'), 1392);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1393, to_date('27-07-2023', 'dd-mm-yyyy'), 1393);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1394, to_date('06-07-2023', 'dd-mm-yyyy'), 1394);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1395, to_date('23-07-2023', 'dd-mm-yyyy'), 1395);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1396, to_date('11-07-2023', 'dd-mm-yyyy'), 1396);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1397, to_date('25-07-2023', 'dd-mm-yyyy'), 1397);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1398, to_date('21-07-2023', 'dd-mm-yyyy'), 1398);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1399, to_date('19-07-2023', 'dd-mm-yyyy'), 1399);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1400, to_date('17-07-2023', 'dd-mm-yyyy'), 1400);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1401, to_date('07-07-2023', 'dd-mm-yyyy'), 1401);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1402, to_date('18-07-2023', 'dd-mm-yyyy'), 1402);
+insert into PAYMENT_REPORT (payment_id, payment_date, booking_id)
+values (1403, to_date('19-07-2023', 'dd-mm-yyyy'), 1403);
+commit;
+prompt 379 records loaded
 prompt Loading WORKINGCREW...
 insert into WORKINGCREW (flight_id, crew_id)
 values (514, 113);
@@ -19026,10 +19446,6 @@ commit;
 prompt 999 records loaded
 prompt Enabling foreign key constraints for BAGGAGE...
 alter table BAGGAGE enable constraint SYS_C008429;
-prompt Enabling foreign key constraints for BOOKING...
-alter table BOOKING enable constraint SYS_C008449;
-alter table BOOKING enable constraint SYS_C008450;
-alter table BOOKING enable constraint SYS_C008451;
 prompt Enabling foreign key constraints for FLIGHTS...
 alter table FLIGHTS enable constraint SYS_C008402;
 alter table FLIGHTS enable constraint SYS_C008403;
@@ -19040,6 +19456,9 @@ alter table JOINEDBOOKING enable constraint FK_FLIGHT;
 alter table JOINEDBOOKING enable constraint FK_PASSENGER;
 alter table JOINEDBOOKING enable constraint FK_SELLER;
 alter table JOINEDBOOKING enable constraint FK_TICKET;
+prompt Enabling foreign key constraints for PAYMENT_REPORT...
+alter table PAYMENT_REPORT enable constraint BOOKING_ID;
+alter table PAYMENT_REPORT enable constraint SYS_C008457;
 prompt Enabling foreign key constraints for WORKINGCREW...
 alter table WORKINGCREW enable constraint SYS_C008417;
 alter table WORKINGCREW enable constraint SYS_C008418;
@@ -19053,18 +19472,18 @@ prompt Enabling triggers for TICKET...
 alter table TICKET enable all triggers;
 prompt Enabling triggers for BAGGAGE...
 alter table BAGGAGE enable all triggers;
-prompt Enabling triggers for TICKETSELLER...
-alter table TICKETSELLER enable all triggers;
-prompt Enabling triggers for BOOKING...
-alter table BOOKING enable all triggers;
 prompt Enabling triggers for CREWMEMBERS...
 alter table CREWMEMBERS enable all triggers;
 prompt Enabling triggers for FLIGHTS...
 alter table FLIGHTS enable all triggers;
 prompt Enabling triggers for JOINEDPASSENGERS...
 alter table JOINEDPASSENGERS enable all triggers;
+prompt Enabling triggers for TICKETSELLER...
+alter table TICKETSELLER enable all triggers;
 prompt Enabling triggers for JOINEDBOOKING...
 alter table JOINEDBOOKING enable all triggers;
+prompt Enabling triggers for PAYMENT_REPORT...
+alter table PAYMENT_REPORT enable all triggers;
 prompt Enabling triggers for WORKINGCREW...
 alter table WORKINGCREW enable all triggers;
 
