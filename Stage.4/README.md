@@ -163,7 +163,7 @@ joining both databases into one database.
 
 ### The new database
 
-![alt text](image-9.jpg)
+
 
 ### Create Table Statements
 
@@ -273,6 +273,10 @@ CREATE TABLE TicketSeller (
 ##### ERD
 
 ![ERD](db.erd.png)
+
+##### DSD
+
+![alt text](image-9.jpg)
 
 
 ### 5. Creating two views
