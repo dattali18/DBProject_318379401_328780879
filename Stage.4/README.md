@@ -23,27 +23,28 @@ and we extracted the file using PL\SQL Developer.
 
 ### 2. Reverse engineering the backup file
 
-after looking at the create statement from the backup file we can see the in their database they have the following tables:
+after looking at the create statement from the backup file we can see thet in their database they have the following tables:
 
 ```sql
 CREATE TABLE TICKET
 (
-  ticket_id    NUMBER(38) NOT NULL,
+  ticket_id    NUMBER(38) PRIMARY KEY,
   ticket_type  VARCHAR2(255) DEFAULT 'Regular' NOT NULL,
   ticket_price FLOAT NOT NULL
 );
 
 CREATE TABLE BAGGAGE
 (
-  baggage_id     NUMBER(38) NOT NULL,
+  baggage_id     NUMBER(38) PRIMARY KEY,
   baggage_type   VARCHAR2(255) NOT NULL,
   baggage_weight FLOAT NOT NULL,
-  ticket_id      NUMBER(38) NOT NULL
+  ticket_id      NUMBER(38) NOT NULL,
+  FOREIGN KEY (TICKET_ID) REFERENCES TICKET(TICKET_ID)
 );
 
 CREATE TABLE PASSENGER
 (
-  passenger_id    NUMBER(38) NOT NULL,
+  passenger_id    NUMBER(38) PRIMARY KEY,
   passenger_name  VARCHAR2(255) NOT NULL,
   passenger_phone VARCHAR2(15) NOT NULL,
   passenger_email VARCHAR2(255) NOT NULL
@@ -51,24 +52,27 @@ CREATE TABLE PASSENGER
 
 CREATE TABLE TICKETSELLER
 (
-  seller_id      NUMBER(38) NOT NULL,
+  seller_id      NUMBER(38) PRIMARY KEY,
   seller_name    VARCHAR2(255) NOT NULL,
   seller_contact VARCHAR2(255) NOT NULL
 );
 
 CREATE TABLE BOOKING
 (
-  booking_id   NUMBER(38) DEFAULT '-1' NOT NULL,
+  booking_id   NUMBER(38) DEFAULT '-1' PRIMARY KEY,
   journey_id   NUMBER(38) NOT NULL,
   booking_date DATE NOT NULL,
   passenger_id NUMBER(38) NOT NULL,
   seller_id    NUMBER(38) NOT NULL,
-  ticket_id    NUMBER(38) NOT NULL
+  ticket_id    NUMBER(38) NOT NULL,
+  FOREIGN KEY (PASSENGER_ID) REFERENCES PASSENGER(PASSENGER_ID),
+    FOREIGN KEY (SELLER_ID) REFERENCES TICKETSELLER(SELLER_ID),
+    FOREIGN KEY (TICKET_ID) REFERENCES TICKET(TICKET_ID)
 );
 
 CREATE TABLE PAYMENT_REPORT
 (
-  payment_id   NUMBER(38) NOT NULL,
+  payment_id   NUMBER(38) PRIMARY KEY,
   payment_date DATE NOT NULL,
   booking_id   NUMBER(38) NOT NULL
 );
@@ -166,7 +170,7 @@ joining both databases into one database.
 #### JoinedPassengers
 ```sql
 CREATE TABLE JoinedPassengers (
-  PASSENGER_ID NUMBER(38) NOT NULL,
+  PASSENGER_ID NUMBER(38) PRIMARY KEY ,
   PASSENGER_NAME VARCHAR2(255) NOT NULL,
   PASSENGER_PHONE VARCHAR2(15) NOT NULL,
   PASSENGER_EMAIL VARCHAR2(255) NOT NULL,
@@ -178,81 +182,91 @@ CREATE TABLE JoinedPassengers (
 #### JoinedBooking
 ```sql
 CREATE TABLE JoinedBooking (
-  BOOKING_ID NUMBER(38) NOT NULL,
-  PASSENGER_ID NUMBER(38) NOT NULL,
-  FLIGHT_ID NUMBER(38) NOT NULL,
-  SEAT_NUMBER VARCHAR2(10) NOT NULL,
-  BOOKING_DATE DATE NOT NULL,
-  JOURNEY_ID NUMBER(38) NOT NULL,
-  SELLER_ID NUMBER(38) NOT NULL,
-  TICKET_ID NUMBER(38) NOT NULL
+  BOOKING_ID NUMBER PRIMARY KEY,
+    PASSENGER_ID NUMBER NOT NULL,
+    FLIGHT_ID NUMBER NOT NULL,
+    SEAT_NUMBER VARCHAR2(10) NOT NULL,
+    BOOKING_DATE DATE NOT NULL,
+    JOURNEY_ID NUMBER NOT NULL,
+    SELLER_ID NUMBER NOT NULL,
+    TICKET_ID NUMBER NOT NULL,
+    FOREIGN KEY (PASSENGER_ID) REFERENCES JOINEDPASSENGERS(PASSENGER_ID),
+    FOREIGN KEY (FLIGHT_ID) REFERENCES FLIGHTS(FLIGHT_ID),
+    FOREIGN KEY (SELLER_ID) REFERENCES TICKETSELLER(SELLER_ID),
+    FOREIGN KEY (TICKET_ID) REFERENCES TICKET(TICKET_ID)
 );
 ```
 
 #### Flights
 ```sql
 CREATE TABLE Flights (
-  FLIGHT_ID NUMBER(38) NOT NULL,
-  FLIGHT_NUMBER VARCHAR2(20) NOT NULL,
-  DEPARTURE_TIME DATE NOT NULL,
-  ARRIVAL_TIME DATE NOT NULL,
-  FLIGHT_STATUS VARCHAR2(20) NOT NULL,
-  DEPARTURE_AIRPORT VARCHAR2(100) NOT NULL,
-  AIRLINE_ID NUMBER(38) NOT NULL,
-  AIRCRAFT_ID NUMBER(38) NOT NULL,
-  ARRIVAL_AIRPORT VARCHAR2(100) NOT NULL
+  FLIGHT_ID INTEGER PRIMARY KEY,
+    FLIGHT_NUMBER VARCHAR2(100) NOT NULL,
+    DEPARTURE_TIME DATE NOT NULL,
+    ARRIVAL_TIME DATE NOT NULL,
+    FLIGHT_STATUS VARCHAR2(200) NOT NULL,
+    AIRLINE_ID INTEGER NOT NULL,
+    AIRCRAFT_ID INTEGER NOT NULL,
+    DEPARTURE_AIRPORT INTEGER NOT NULL,
+    ARRIVAL_AIRPORT INTEGER NOT NULL,
+    FOREIGN KEY (AIRLINE_ID) REFERENCES AIRLINES(AIRLINE_ID),
+    FOREIGN KEY (AIRCRAFT_ID) REFERENCES AIRCRAFT(AIRCRAFT_ID),
+    FOREIGN KEY (DEPARTURE_AIRPORT) REFERENCES AIRPORTS(AIRPORT_ID),
+    FOREIGN KEY (ARRIVAL_AIRPORT) REFERENCES AIRPORTS(AIRPORT_ID)
 );
 ```
 
 #### Aircraft
 ```sql
 CREATE TABLE Aircraft (
-  AIRCRAFT_ID NUMBER(38) NOT NULL,
-  AIRCRAFT_TYPE VARCHAR2(50) NOT NULL,
-  CAPACITY NUMBER(38) NOT NULL
+  AIRCRAFT_ID INTEGER PRIMARY KEY,
+  AIRCRAFT_TYPE VARCHAR2(200) NOT NULL,
+  CAPACITY INTEGER NOT NULL
 );
 ```
 
 #### Airports
 ```sql
 CREATE TABLE Airports (
-  AIRPORT_ID NUMBER(38) NOT NULL,
-  AIRPORT_NAME VARCHAR2(100) NOT NULL,
-  LOCATION VARCHAR2(100) NOT NULL
+  AIRPORT_ID INTEGER PRIMARY KEY,
+  AIRPORT_NAME VARCHAR2(200) NOT NULL,
+  LOCATION VARCHAR2(200) NOT NULL
 );
 ```
 
 #### Airlines
 ```sql
 CREATE TABLE Airlines (
-  AIRLINE_ID NUMBER(38) NOT NULL,
-  AIRLINE_NAME VARCHAR2(100) NOT NULL,
-  ORIGIN_COUNTRY VARCHAR2(50) NOT NULL
+  AIRLINE_ID INTEGER PRIMARY KEY,
+  AIRLINE_NAME VARCHAR2(200) NOT NULL,
+  ORIGIN_COUNTRY VARCHAR2(200) NOT NULL
 );
 ```
 
 #### CrewMembers
 ```sql
 CREATE TABLE CrewMembers (
-  CREW_ID NUMBER(38) NOT NULL,
-  CREW_NAME VARCHAR2(100) NOT NULL,
-  CREW_ROLE VARCHAR2(50) NOT NULL,
-  FLIGHT_ID NUMBER(38) NOT NULL
+  AIRLINE_ID INTEGER PRIMARY KEY,
+  AIRLINE_NAME VARCHAR2(200) NOT NULL,
+  ORIGIN_COUNTRY VARCHAR2(200) NOT NULL
 );
 ```
 
 #### WorkingCrew
 ```sql
 CREATE TABLE WorkingCrew (
-  FLIGHT_ID NUMBER(38) NOT NULL,
-  CREW_ID NUMBER(38) NOT NULL
+  FLIGHT_ID INTEGER NOT NULL,
+  CREW_ID INTEGER NOT NULL,
+  PRIMARY KEY (FLIGHT_ID, CREW_ID),
+  FOREIGN KEY (FLIGHT_ID) REFERENCES FLIGHTS(FLIGHT_ID),
+  FOREIGN KEY (CREW_ID) REFERENCES CREWMEMBERS(CREW_ID)
 );
 ```
 
 #### Ticket
 ```sql
 CREATE TABLE Ticket (
-  TICKET_ID NUMBER(38) NOT NULL,
+  TICKET_ID NUMBER PRIMARY KEY,
   TICKET_TYPE VARCHAR2(255) DEFAULT 'Regular' NOT NULL,
   TICKET_PRICE FLOAT NOT NULL
 );
@@ -261,27 +275,28 @@ CREATE TABLE Ticket (
 #### Baggage
 ```sql
 CREATE TABLE Baggage (
-  BAGGAGE_ID NUMBER(38) NOT NULL,
+  BAGGAGE_ID NUMBER(38) PRIMARY KEY,
   BAGGAGE_TYPE VARCHAR2(255) NOT NULL,
   BAGGAGE_WEIGHT FLOAT NOT NULL,
-  TICKET_ID NUMBER(38) NOT NULL
+  TICKET_ID NUMBER(38) NOT NULL,
+  FOREIGN KEY (TICKET_ID) REFERENCES TICKET(TICKET_ID)
 );
 ```
 
 #### PaymentReport
 ```sql
 CREATE TABLE PaymentReport (
-  PAYMENT_ID NUMBER(38) NOT NULL,
-  PAYMENT_AMOUNT NUMBER(38) NOT NULL,
+  PAYMENT_ID NUMBER(38) PRIMARY KEY,
   PAYMENT_DATE DATE NOT NULL,
-  BOOKING_ID NUMBER(38) NOT NULL
+  BOOKING_ID NUMBER(38) NOT NULL,
+  FOREIGN KEY (BOOKING_ID) REFERENCES JOINEDBOOKING(BOOKING_ID)
 );
 ```
 
 #### TicketSeller
 ```sql
 CREATE TABLE TicketSeller (
-  SELLER_ID NUMBER(38) NOT NULL,
+  SELLER_ID NUMBER(38) PRIMARY KEY,
   SELLER_NAME VARCHAR2(255) NOT NULL,
   SELLER_CONTACT VARCHAR2(255) NOT NULL
 );
@@ -329,9 +344,11 @@ GROUP BY
     f.FLIGHT_NUMBER;
 ```
 
+![alt text](image-9.png)
+
 ## 6. Querying the views
 
-### Query 1
+### Query 1 on view 1
 
 this query is used to get the booking id, passenger name, flight number and payment date from the view.
 usage: this query can be used to get the booking id, passenger name, flight number and payment date from the view.
@@ -344,7 +361,7 @@ FROM View_OriginalDepartment;
 ![alt text](image-6.png)
 
 
-### Query 2
+### Query 2 on view 1
 
 this query is used to get the flight number and the number of bookings for that flight.
 usage: this query can be used to get the flight number and the number of bookings for that flight.
@@ -356,3 +373,36 @@ GROUP BY FLIGHT_NUMBER;
 ```
 
 ![alt text](image-8.png)
+
+### Query 1 on view 2
+### return all fthe flights and the number of booking for each flight Sorted in descending order
+
+```sql
+SELECT 
+    FLIGHT_NUMBER, 
+    NumberOfBookings 
+FROM 
+    View_FlightBooking
+ORDER BY 
+    NumberOfBookings DESC;
+
+```
+
+![alt text](image-13.png)
+
+
+### Query 2 on view 2
+### reurn the number of booking for given flight
+
+```sql
+SELECT 
+    FLIGHT_NUMBER, 
+    NumberOfBookings 
+FROM 
+    View_FlightBooking
+WHERE 
+    FLIGHT_NUMBER = 'BC-58345061';
+```
+
+![alt text](image-12.png)
+
