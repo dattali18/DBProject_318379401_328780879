@@ -270,10 +270,6 @@ CREATE TABLE TicketSeller (
 
 #### Diagrams
 
-##### DSD
-
-![DSD](db.dsd.png)
-
 ##### ERD
 
 ![ERD](db.erd.png)
