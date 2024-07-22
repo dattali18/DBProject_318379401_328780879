@@ -137,7 +137,10 @@ Turning the DSD into an ERD we get the following ERD:
 
 ![alt text](image-5.jpg)
 
+#### Our database before changes
 
+![DSD](DSD.2.png)
+![ERD](ERD.2.png)
 
 ### 4. Altering the database
 
