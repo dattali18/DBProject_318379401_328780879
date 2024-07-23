@@ -154,7 +154,11 @@ we need to alter our database since in both our database there are a few table w
 
 joining both databases into one database.
 
+הטבלה passenger הייתה קיימת בשני בסיס הנתונים אבל לא הייתה שום בעיה למזר אותם לטבלה אחת בגלל שהמספריים הייחודים בשני הטבלאות היו שונים
+
 ![alt text](image-2.png)
+
+הטבלה booking גם כן הייתה קיימת בשני בסיס הנותנים והיו מספרים מזההים חופפים ולכן ייצרנו שאיילתה שתמזג אותם לטבלה אחת כך שבשורות עם מספרים מזההים זהים חלק מהנתונים ילקחו מטבלה אחת וחלק ילקחו המטבלה השניה
 
 ![alt text](image-16.png)
 ![alt text](image-17.png)
