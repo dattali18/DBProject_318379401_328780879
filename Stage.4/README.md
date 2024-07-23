@@ -155,7 +155,9 @@ we need to alter our database since in both our database there are a few table w
 joining both databases into one database.
 
 ![alt text](image-2.png)
-![alt text](image-3.png)
+
+![alt text](image-16.png)
+![alt text](image-17.png)
 
 #### Creating a backup file of the new database
 
@@ -168,7 +170,7 @@ joining both databases into one database.
 ### Create Table Statements
 
 ```sql
-CREATE TABLE Passengers (
+CREATE TABLE JoinedPassengers (
   PASSENGER_ID INTEGER PRIMARY KEY ,
   PASSENGER_NAME VARCHAR(255) NOT NULL,
   PASSENGER_PHONE VARCHAR(15) NOT NULL,
@@ -177,7 +179,7 @@ CREATE TABLE Passengers (
   PASSENGER_BIRTHDATE DATE
 );
 
-CREATE TABLE Booking (
+CREATE TABLE JoinedBooking_new (
   BOOKING_ID INTEGER PRIMARY KEY,
     PASSENGER_ID INTEGER NOT NULL,
     FLIGHT_ID INTEGER NOT NULL,
@@ -276,7 +278,7 @@ CREATE TABLE TicketSeller (
 
 ##### DSD
 
-![alt text](image-9.jpg)
+![alt text](image-14.png)
 
 
 ### 5. Creating two views
@@ -445,7 +447,7 @@ BEGIN
     -- Count booked seats using cursor
     SELECT COUNT(*)
     INTO v_booked_seats
-    FROM joinedbooking
+    FROM joinedbooking_new
     WHERE flight_id = p_flight_id;
 
     -- Calculate available seats
@@ -610,3 +612,34 @@ END;
 ```
 
 #### בפונקציה השניה השתמשנו בטבלה booking לאחר שמיזגנו את בסיס הנתונים צריך להשתמש בטבלה joinedbooking
+
+
+
+### שאילתה שמדגימה את השימוש בשני בסיסי הנתונים
+
+```sql
+SELECT
+    a.airline_name AS Airline,
+    f.flight_number AS Flight_Number,
+    dep.airport_name AS Departure_Airport,
+    arr.airport_name AS Arrival_Airport,
+    COUNT(t.ticket_id) AS Tickets_Sold
+FROM
+    Flights f
+    JOIN Airlines a ON f.airline_id = a.airline_id
+    JOIN Airports dep ON f.departure_airport = dep.airport_id
+    JOIN Airports arr ON f.arrival_airport = arr.airport_id
+    LEFT JOIN JoinedBooking_new b ON f.flight_id = b.flight_id
+    LEFT JOIN Ticket t ON b.ticket_id = t.ticket_id
+GROUP BY
+    a.airline_name,
+    f.flight_number,
+    dep.airport_name,
+    arr.airport_name
+ORDER BY
+    Tickets_Sold DESC;
+```
+
+![alt text](image-15.png)
+
+### החישוב של כמות הכרטיסים לטיסה חושבה בעזרת בסיס הנתונים שני
