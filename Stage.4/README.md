@@ -298,7 +298,7 @@ SELECT
     pr.PAYMENT_DATE,
     pr.PAYMENT_ID
 FROM 
-    JOINEDBOOKING b
+    JOINEDBOOKING_NEW b
 JOIN 
     JOINEDPASSENGERS p ON b.PASSENGER_ID = p.PASSENGER_ID
 JOIN 
@@ -307,7 +307,7 @@ JOIN
     PAYMENT_REPORT pr ON b.BOOKING_ID = pr.BOOKING_ID;
 ```
 
-![alt text](image-5.png)
+![alt text](image-18.png)
 
 ### View 2
 
@@ -317,14 +317,14 @@ SELECT
     f.FLIGHT_NUMBER,
     COUNT(b.BOOKING_ID) AS NumberOfBookings
 FROM
-    JOINEDBOOKING b
+    JOINEDBOOKING_NEW b
 JOIN
     FLIGHTS f ON b.FLIGHT_ID = f.FLIGHT_ID
 GROUP BY
     f.FLIGHT_NUMBER;
 ```
 
-![alt text](image-9.png)
+![alt text](image-19.png)
 
 ## 6. Querying the views
 
